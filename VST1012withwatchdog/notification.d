@@ -1,0 +1,39 @@
+.\notification.o: source\Notification.c
+.\notification.o: .\include\esm.h
+.\notification.o: .\include\reg_esm.h
+.\notification.o: .\include\sys_common.h
+.\notification.o: .\include\hal_stdtypes.h
+.\notification.o: D:\Program Files\Keil\ARM\ARMCC\bin\..\include\stdint.h
+.\notification.o: D:\Program Files\Keil\ARM\ARMCC\bin\..\include\stdbool.h
+.\notification.o: .\include\sys_selftest.h
+.\notification.o: .\include\reg_pbist.h
+.\notification.o: .\include\reg_stc.h
+.\notification.o: .\include\reg_efc.h
+.\notification.o: .\include\sys_core.h
+.\notification.o: .\include\system.h
+.\notification.o: .\include\reg_system.h
+.\notification.o: .\include\reg_gio.h
+.\notification.o: .\include\reg_flash.h
+.\notification.o: .\include\reg_tcram.h
+.\notification.o: .\include\sys_vim.h
+.\notification.o: .\include\reg_vim.h
+.\notification.o: .\include\adc.h
+.\notification.o: .\include\reg_adc.h
+.\notification.o: .\include\can.h
+.\notification.o: .\include\reg_can.h
+.\notification.o: .\include\mibspi.h
+.\notification.o: .\include\reg_mibspi.h
+.\notification.o: .\include\het.h
+.\notification.o: .\include\reg_het.h
+.\notification.o: D:\Program Files\Keil\ARM\ARMCC\bin\..\include\string.h
+.\notification.o: .\include\htu.h
+.\notification.o: .\include\reg_htu.h
+.\notification.o: .\include\gio.h
+.\notification.o: .\include\sci.h
+.\notification.o: .\include\reg_sci.h
+.\notification.o: .\include\spi.h
+.\notification.o: .\include\reg_spi.h
+.\notification.o: .\include\i2c.h
+.\notification.o: .\include\reg_i2c.h
+.\notification.o: .\include\sys_dma.h
+.\notification.o: .\include\reg_dma.h

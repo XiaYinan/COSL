@@ -1,0 +1,353 @@
+Dependencies for Project 'TMS570ls3137', Target 'Target 1': (DO NOT MODIFY !)
+F (.\source\sys_main.c)(0x55B386A2)(-c --cpu Cortex-R4F --bi -g -O0 --apcs=interwork -I.\include-I E:\keil472\ARM\RV31\INC-I E:\keil472\ARM\CMSIS\Include-I E:\keil472\ARM\Inc\TI-o .\sys_main.o --omf_browse .\sys_main.crf --depend .\sys_main.d)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_common.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\hal_stdtypes.h)(0x55B38641)
+I (E:\keil472\ARM\ARMCC\include\stdint.h)(0x51C7B744)
+I (E:\keil472\ARM\ARMCC\include\stdbool.h)(0x51C7B744)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\spi.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_spi.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_gio.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_core.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sci.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_sci.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\gio.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\i2c.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_i2c.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\adc.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_adc.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\het.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_het.h)(0x55B38641)
+I (E:\keil472\ARM\ARMCC\include\string.h)(0x51C7B744)
+F (.\source\adc.c)(0x55B38641)(-c --cpu Cortex-R4F --bi -g -O0 --apcs=interwork -I.\include-I E:\keil472\ARM\RV31\INC-I E:\keil472\ARM\CMSIS\Include-I E:\keil472\ARM\Inc\TI-o .\adc.o --omf_browse .\adc.crf --depend .\adc.d)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\adc.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_adc.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_common.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\hal_stdtypes.h)(0x55B38641)
+I (E:\keil472\ARM\ARMCC\include\stdint.h)(0x51C7B744)
+I (E:\keil472\ARM\ARMCC\include\stdbool.h)(0x51C7B744)
+F (.\source\esm.c)(0x55B38641)(-c --cpu Cortex-R4F --bi -g -O0 --apcs=interwork -I.\include-I E:\keil472\ARM\RV31\INC-I E:\keil472\ARM\CMSIS\Include-I E:\keil472\ARM\Inc\TI-o .\esm.o --omf_browse .\esm.crf --depend .\esm.d)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\esm.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_esm.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_common.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\hal_stdtypes.h)(0x55B38641)
+I (E:\keil472\ARM\ARMCC\include\stdint.h)(0x51C7B744)
+I (E:\keil472\ARM\ARMCC\include\stdbool.h)(0x51C7B744)
+F (.\source\gio.c)(0x55B38641)(-c --cpu Cortex-R4F --bi -g -O0 --apcs=interwork -I.\include-I E:\keil472\ARM\RV31\INC-I E:\keil472\ARM\CMSIS\Include-I E:\keil472\ARM\Inc\TI-o .\gio.o --omf_browse .\gio.crf --depend .\gio.d)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\gio.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_gio.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_common.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\hal_stdtypes.h)(0x55B38641)
+I (E:\keil472\ARM\ARMCC\include\stdint.h)(0x51C7B744)
+I (E:\keil472\ARM\ARMCC\include\stdbool.h)(0x51C7B744)
+F (.\source\i2c.c)(0x55B38641)(-c --cpu Cortex-R4F --bi -g -O0 --apcs=interwork -I.\include-I E:\keil472\ARM\RV31\INC-I E:\keil472\ARM\CMSIS\Include-I E:\keil472\ARM\Inc\TI-o .\i2c.o --omf_browse .\i2c.crf --depend .\i2c.d)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\i2c.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_i2c.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_common.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\hal_stdtypes.h)(0x55B38641)
+I (E:\keil472\ARM\ARMCC\include\stdint.h)(0x51C7B744)
+I (E:\keil472\ARM\ARMCC\include\stdbool.h)(0x51C7B744)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_gio.h)(0x55B38641)
+F (.\source\lin.c)(0x55B2202E)(-c --cpu Cortex-R4F --bi -g -O0 --apcs=interwork -I.\include-I E:\keil472\ARM\RV31\INC-I E:\keil472\ARM\CMSIS\Include-I E:\keil472\ARM\Inc\TI-o .\lin.o --omf_browse .\lin.crf --depend .\lin.d)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\lin.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_lin.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_common.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\hal_stdtypes.h)(0x55B38641)
+I (E:\keil472\ARM\ARMCC\include\stdint.h)(0x51C7B744)
+I (E:\keil472\ARM\ARMCC\include\stdbool.h)(0x51C7B744)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_gio.h)(0x55B38641)
+F (.\source\mibspi.c)(0x55B38641)(-c --cpu Cortex-R4F --bi -g -O0 --apcs=interwork -I.\include-I E:\keil472\ARM\RV31\INC-I E:\keil472\ARM\CMSIS\Include-I E:\keil472\ARM\Inc\TI-o .\mibspi.o --omf_browse .\mibspi.crf --depend .\mibspi.d)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\mibspi.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_mibspi.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_common.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\hal_stdtypes.h)(0x55B38641)
+I (E:\keil472\ARM\ARMCC\include\stdint.h)(0x51C7B744)
+I (E:\keil472\ARM\ARMCC\include\stdbool.h)(0x51C7B744)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_gio.h)(0x55B38641)
+F (.\source\Notification.c)(0x55B3868E)(-c --cpu Cortex-R4F --bi -g -O0 --apcs=interwork -I.\include-I E:\keil472\ARM\RV31\INC-I E:\keil472\ARM\CMSIS\Include-I E:\keil472\ARM\Inc\TI-o .\notification.o --omf_browse .\notification.crf --depend .\notification.d)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\esm.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_esm.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_common.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\hal_stdtypes.h)(0x55B38641)
+I (E:\keil472\ARM\ARMCC\include\stdint.h)(0x51C7B744)
+I (E:\keil472\ARM\ARMCC\include\stdbool.h)(0x51C7B744)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_selftest.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_pbist.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_stc.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_efc.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_core.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\system.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_system.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_gio.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_flash.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_tcram.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_vim.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_vim.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\adc.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_adc.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\can.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_can.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\mibspi.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_mibspi.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\het.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_het.h)(0x55B38641)
+I (E:\keil472\ARM\ARMCC\include\string.h)(0x51C7B744)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\htu.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_htu.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\gio.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sci.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_sci.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\spi.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_spi.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\i2c.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_i2c.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_dma.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_dma.h)(0x55B38641)
+F (.\source\pinmux.c)(0x55B38641)(-c --cpu Cortex-R4F --bi -g -O0 --apcs=interwork -I.\include-I E:\keil472\ARM\RV31\INC-I E:\keil472\ARM\CMSIS\Include-I E:\keil472\ARM\Inc\TI-o .\pinmux.o --omf_browse .\pinmux.crf --depend .\pinmux.d)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_system.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_common.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\hal_stdtypes.h)(0x55B38641)
+I (E:\keil472\ARM\ARMCC\include\stdint.h)(0x51C7B744)
+I (E:\keil472\ARM\ARMCC\include\stdbool.h)(0x51C7B744)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_gio.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\pinmux.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_pinmux.h)(0x55B38641)
+F (.\source\sci.c)(0x55B3868E)(-c --cpu Cortex-R4F --bi -g -O0 --apcs=interwork -I.\include-I E:\keil472\ARM\RV31\INC-I E:\keil472\ARM\CMSIS\Include-I E:\keil472\ARM\Inc\TI-o .\sci.o --omf_browse .\sci.crf --depend .\sci.d)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sci.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_sci.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_common.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\hal_stdtypes.h)(0x55B38641)
+I (E:\keil472\ARM\ARMCC\include\stdint.h)(0x51C7B744)
+I (E:\keil472\ARM\ARMCC\include\stdbool.h)(0x51C7B744)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_gio.h)(0x55B38641)
+F (.\source\het.c)(0x55B38641)(-c --cpu Cortex-R4F --bi -g -O0 --apcs=interwork -I.\include-I E:\keil472\ARM\RV31\INC-I E:\keil472\ARM\CMSIS\Include-I E:\keil472\ARM\Inc\TI-o .\het.o --omf_browse .\het.crf --depend .\het.d)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\het.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_het.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_common.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\hal_stdtypes.h)(0x55B38641)
+I (E:\keil472\ARM\ARMCC\include\stdint.h)(0x51C7B744)
+I (E:\keil472\ARM\ARMCC\include\stdbool.h)(0x51C7B744)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_gio.h)(0x55B38641)
+I (E:\keil472\ARM\ARMCC\include\string.h)(0x51C7B744)
+F (.\source\spi.c)(0x55B38641)(-c --cpu Cortex-R4F --bi -g -O0 --apcs=interwork -I.\include-I E:\keil472\ARM\RV31\INC-I E:\keil472\ARM\CMSIS\Include-I E:\keil472\ARM\Inc\TI-o .\spi.o --omf_browse .\spi.crf --depend .\spi.d)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\spi.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_spi.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_common.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\hal_stdtypes.h)(0x55B38641)
+I (E:\keil472\ARM\ARMCC\include\stdint.h)(0x51C7B744)
+I (E:\keil472\ARM\ARMCC\include\stdbool.h)(0x51C7B744)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_gio.h)(0x55B38641)
+F (.\source\sys_dma.c)(0x55B38641)(-c --cpu Cortex-R4F --bi -g -O0 --apcs=interwork -I.\include-I E:\keil472\ARM\RV31\INC-I E:\keil472\ARM\CMSIS\Include-I E:\keil472\ARM\Inc\TI-o .\sys_dma.o --omf_browse .\sys_dma.crf --depend .\sys_dma.d)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_dma.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_dma.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_common.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\hal_stdtypes.h)(0x55B38641)
+I (E:\keil472\ARM\ARMCC\include\stdint.h)(0x51C7B744)
+I (E:\keil472\ARM\ARMCC\include\stdbool.h)(0x51C7B744)
+F (.\source\sys_pcr.c)(0x55B38641)(-c --cpu Cortex-R4F --bi -g -O0 --apcs=interwork -I.\include-I E:\keil472\ARM\RV31\INC-I E:\keil472\ARM\CMSIS\Include-I E:\keil472\ARM\Inc\TI-o .\sys_pcr.o --omf_browse .\sys_pcr.crf --depend .\sys_pcr.d)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_pcr.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_pcr.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_common.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\hal_stdtypes.h)(0x55B38641)
+I (E:\keil472\ARM\ARMCC\include\stdint.h)(0x51C7B744)
+I (E:\keil472\ARM\ARMCC\include\stdbool.h)(0x51C7B744)
+F (.\source\sys_phantom.c)(0x55B38641)(-c --cpu Cortex-R4F --bi -g -O0 --apcs=interwork -I.\include-I E:\keil472\ARM\RV31\INC-I E:\keil472\ARM\CMSIS\Include-I E:\keil472\ARM\Inc\TI-o .\sys_phantom.o --omf_browse .\sys_phantom.crf --depend .\sys_phantom.d)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_common.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\hal_stdtypes.h)(0x55B38641)
+I (E:\keil472\ARM\ARMCC\include\stdint.h)(0x51C7B744)
+I (E:\keil472\ARM\ARMCC\include\stdbool.h)(0x51C7B744)
+F (.\source\sys_pmm.c)(0x55B38641)(-c --cpu Cortex-R4F --bi -g -O0 --apcs=interwork -I.\include-I E:\keil472\ARM\RV31\INC-I E:\keil472\ARM\CMSIS\Include-I E:\keil472\ARM\Inc\TI-o .\sys_pmm.o --omf_browse .\sys_pmm.crf --depend .\sys_pmm.d)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_pmm.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_pmm.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_common.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\hal_stdtypes.h)(0x55B38641)
+I (E:\keil472\ARM\ARMCC\include\stdint.h)(0x51C7B744)
+I (E:\keil472\ARM\ARMCC\include\stdbool.h)(0x51C7B744)
+F (.\source\sys_selftest.c)(0x55B38641)(-c --cpu Cortex-R4F --bi -g -O0 --apcs=interwork -I.\include-I E:\keil472\ARM\RV31\INC-I E:\keil472\ARM\CMSIS\Include-I E:\keil472\ARM\Inc\TI-o .\sys_selftest.o --omf_browse .\sys_selftest.crf --depend .\sys_selftest.d)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_selftest.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_pbist.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_common.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\hal_stdtypes.h)(0x55B38641)
+I (E:\keil472\ARM\ARMCC\include\stdint.h)(0x51C7B744)
+I (E:\keil472\ARM\ARMCC\include\stdbool.h)(0x51C7B744)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_stc.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_efc.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_core.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\system.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_system.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_gio.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_flash.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_tcram.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_vim.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_vim.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\adc.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_adc.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\can.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_can.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\mibspi.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_mibspi.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\het.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_het.h)(0x55B38641)
+I (E:\keil472\ARM\ARMCC\include\string.h)(0x51C7B744)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\htu.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_htu.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\esm.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_esm.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_pmu.h)(0x55B38641)
+F (.\source\sys_startup.c)(0x55B38641)(-c --cpu Cortex-R4F --bi -g -O0 --apcs=interwork -I.\include-I E:\keil472\ARM\RV31\INC-I E:\keil472\ARM\CMSIS\Include-I E:\keil472\ARM\Inc\TI-o .\sys_startup.o --omf_browse .\sys_startup.crf --depend .\sys_startup.d)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_common.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\hal_stdtypes.h)(0x55B38641)
+I (E:\keil472\ARM\ARMCC\include\stdint.h)(0x51C7B744)
+I (E:\keil472\ARM\ARMCC\include\stdbool.h)(0x51C7B744)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\system.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_system.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_gio.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_flash.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_tcram.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_vim.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_vim.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_core.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_selftest.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_pbist.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_stc.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_efc.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\adc.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_adc.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\can.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_can.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\mibspi.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_mibspi.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\het.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_het.h)(0x55B38641)
+I (E:\keil472\ARM\ARMCC\include\string.h)(0x51C7B744)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\htu.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_htu.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\esm.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_esm.h)(0x55B38641)
+F (.\source\sys_vim.c)(0x55B38641)(-c --cpu Cortex-R4F --bi -g -O0 --apcs=interwork -I.\include-I E:\keil472\ARM\RV31\INC-I E:\keil472\ARM\CMSIS\Include-I E:\keil472\ARM\Inc\TI-o .\sys_vim.o --omf_browse .\sys_vim.crf --depend .\sys_vim.d)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_vim.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_vim.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_common.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\hal_stdtypes.h)(0x55B38641)
+I (E:\keil472\ARM\ARMCC\include\stdint.h)(0x51C7B744)
+I (E:\keil472\ARM\ARMCC\include\stdbool.h)(0x51C7B744)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\system.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_system.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_gio.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_flash.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_tcram.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\esm.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_esm.h)(0x55B38641)
+F (.\source\system.c)(0x55B38641)(-c --cpu Cortex-R4F --bi -g -O0 --apcs=interwork -I.\include-I E:\keil472\ARM\RV31\INC-I E:\keil472\ARM\CMSIS\Include-I E:\keil472\ARM\Inc\TI-o .\system.o --omf_browse .\system.crf --depend .\system.d)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\system.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_system.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_common.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\hal_stdtypes.h)(0x55B38641)
+I (E:\keil472\ARM\ARMCC\include\stdint.h)(0x51C7B744)
+I (E:\keil472\ARM\ARMCC\include\stdbool.h)(0x51C7B744)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_gio.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_flash.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_tcram.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_selftest.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_pbist.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_stc.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_efc.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_core.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_vim.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_vim.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\adc.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_adc.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\can.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_can.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\mibspi.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_mibspi.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\het.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_het.h)(0x55B38641)
+I (E:\keil472\ARM\ARMCC\include\string.h)(0x51C7B744)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\htu.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_htu.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\esm.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_esm.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\sys_pcr.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_pcr.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\pinmux.h)(0x55B38641)
+I (F:\xiayinan11\百度云同步盘\newRequirement\FinalMainNew2.0\include\reg_pinmux.h)(0x55B38641)
+F (.\source\dabort.asm)(0x55B38641)(--cpu Cortex-R4F --bi -g --apcs=interwork -I E:\keil472\ARM\RV31\INC-I E:\keil472\ARM\CMSIS\Include-I E:\keil472\ARM\Inc\TI--list .\dabort.lst --xref -o .\dabort.o --depend .\dabort.d)
+F (.\source\sys_core.asm)(0x55B38641)(--cpu Cortex-R4F --bi -g --apcs=interwork --diag_suppress 1786-I E:\keil472\ARM\RV31\INC-I E:\keil472\ARM\CMSIS\Include-I E:\keil472\ARM\Inc\TI--list .\sys_core.lst --xref -o .\sys_core.o --depend .\sys_core.d)
+F (.\source\sys_intvecs.asm)(0x55B38641)(--cpu Cortex-R4F --bi -g --apcs=interwork -I E:\keil472\ARM\RV31\INC-I E:\keil472\ARM\CMSIS\Include-I E:\keil472\ARM\Inc\TI--list .\sys_intvecs.lst --xref -o .\sys_intvecs.o --depend .\sys_intvecs.d)
+F (.\source\sys_mpu.asm)(0x55B38641)(--cpu Cortex-R4F --bi -g --apcs=interwork -I E:\keil472\ARM\RV31\INC-I E:\keil472\ARM\CMSIS\Include-I E:\keil472\ARM\Inc\TI--list .\sys_mpu.lst --xref -o .\sys_mpu.o --depend .\sys_mpu.d)
+F (.\source\sys_pmu.asm)(0x55B38641)(--cpu Cortex-R4F --bi -g --apcs=interwork -I E:\keil472\ARM\RV31\INC-I E:\keil472\ARM\CMSIS\Include-I E:\keil472\ARM\Inc\TI--list .\sys_pmu.lst --xref -o .\sys_pmu.o --depend .\sys_pmu.d)
+F (.\include\adc.h)(0x55B38641)()
+F (.\include\can.h)(0x55B38641)()
+F (.\include\crc.h)(0x55B38641)()
+F (.\include\dcc.h)(0x55B38641)()
+F (.\include\Device_header.h)(0x55B38641)()
+F (.\include\Device_TMS570LS31.h)(0x55B38641)()
+F (.\include\Device_types.h)(0x55B38641)()
+F (.\include\dmm.h)(0x55B38641)()
+F (.\include\emac.h)(0x55B38641)()
+F (.\include\emif.h)(0x55B38641)()
+F (.\include\esm.h)(0x55B38641)()
+F (.\include\fee_interface.h)(0x55B38641)()
+F (.\include\gio.h)(0x55B38641)()
+F (.\include\hal_stdtypes.h)(0x55B38641)()
+F (.\include\het.h)(0x55B38641)()
+F (.\include\htu.h)(0x55B38641)()
+F (.\include\hw_emac.h)(0x55B38641)()
+F (.\include\hw_emac_ctrl.h)(0x55B38641)()
+F (.\include\hw_mdio.h)(0x55B38641)()
+F (.\include\hw_reg_access.h)(0x55B38641)()
+F (.\include\i2c.h)(0x55B38641)()
+F (.\include\lin.h)(0x55B38641)()
+F (.\include\mdio.h)(0x55B38641)()
+F (.\include\MemMap.h)(0x55B38641)()
+F (.\include\mibspi.h)(0x55B38641)()
+F (.\include\phy_dp83640.h)(0x55B38641)()
+F (.\include\pinmux.h)(0x55B38641)()
+F (.\include\pom.h)(0x55B38641)()
+F (.\include\reg_adc.h)(0x55B38641)()
+F (.\include\reg_can.h)(0x55B38641)()
+F (.\include\reg_crc.h)(0x55B38641)()
+F (.\include\reg_dcc.h)(0x55B38641)()
+F (.\include\reg_dma.h)(0x55B38641)()
+F (.\include\reg_dmm.h)(0x55B38641)()
+F (.\include\reg_efc.h)(0x55B38641)()
+F (.\include\reg_emif.h)(0x55B38641)()
+F (.\include\reg_esm.h)(0x55B38641)()
+F (.\include\reg_flash.h)(0x55B38641)()
+F (.\include\reg_gio.h)(0x55B38641)()
+F (.\include\reg_het.h)(0x55B38641)()
+F (.\include\reg_htu.h)(0x55B38641)()
+F (.\include\reg_i2c.h)(0x55B38641)()
+F (.\include\reg_lin.h)(0x55B38641)()
+F (.\include\reg_mibspi.h)(0x55B38641)()
+F (.\include\reg_pbist.h)(0x55B38641)()
+F (.\include\reg_pcr.h)(0x55B38641)()
+F (.\include\reg_pinmux.h)(0x55B38641)()
+F (.\include\reg_pmm.h)(0x55B38641)()
+F (.\include\reg_pom.h)(0x55B38641)()
+F (.\include\reg_rti.h)(0x55B38641)()
+F (.\include\reg_rtp.h)(0x55B38641)()
+F (.\include\reg_sci.h)(0x55B38641)()
+F (.\include\reg_spi.h)(0x55B38641)()
+F (.\include\reg_stc.h)(0x55B38641)()
+F (.\include\reg_system.h)(0x55B38641)()
+F (.\include\reg_tcram.h)(0x55B38641)()
+F (.\include\reg_vim.h)(0x55B38641)()
+F (.\include\rti.h)(0x55B38641)()
+F (.\include\rtp.h)(0x55B38641)()
+F (.\include\sci.h)(0x55B38641)()
+F (.\include\spi.h)(0x55B38641)()
+F (.\include\std_nhet.h)(0x55B38641)()
+F (.\include\sys_common.h)(0x55B38641)()
+F (.\include\sys_core.h)(0x55B38641)()
+F (.\include\sys_dma.h)(0x55B38641)()
+F (.\include\sys_mpu.h)(0x55B38641)()
+F (.\include\sys_pcr.h)(0x55B38641)()
+F (.\include\sys_pmm.h)(0x55B38641)()
+F (.\include\sys_pmu.h)(0x55B38641)()
+F (.\include\sys_selftest.h)(0x55B38641)()
+F (.\include\sys_vim.h)(0x55B38641)()
+F (.\include\system.h)(0x55B38641)()
+F (.\include\ti_fee.h)(0x55B38641)()
+F (.\include\ti_fee_cfg.h)(0x55B38641)()
+F (.\include\ti_fee_types.h)(0x55B38641)()

@@ -1,0 +1,44 @@
+*** Creating Trace Output File 'TMS570ls3137.tra' Ok.
+### Preparing for ADS-LD.
+### Creating ADS-LD Command Line
+### List of Objects: adding '"sys_main.o"'
+### List of Objects: adding '"adc.o"'
+### List of Objects: adding '"esm.o"'
+### List of Objects: adding '"gio.o"'
+### List of Objects: adding '"i2c.o"'
+### List of Objects: adding '"lin.o"'
+### List of Objects: adding '"mibspi.o"'
+### List of Objects: adding '"notification.o"'
+### List of Objects: adding '"pinmux.o"'
+### List of Objects: adding '"sci.o"'
+### List of Objects: adding '"het.o"'
+### List of Objects: adding '"spi.o"'
+### List of Objects: adding '"sys_dma.o"'
+### List of Objects: adding '"sys_pcr.o"'
+### List of Objects: adding '"sys_phantom.o"'
+### List of Objects: adding '"sys_pmm.o"'
+### List of Objects: adding '"sys_selftest.o"'
+### List of Objects: adding '"sys_startup.o"'
+### List of Objects: adding '"sys_vim.o"'
+### List of Objects: adding '"system.o"'
+### List of Objects: adding '"dabort.o"'
+### List of Objects: adding '"sys_core.o"'
+### List of Objects: adding '"sys_intvecs.o"'
+### List of Objects: adding '"sys_mpu.o"'
+### List of Objects: adding '"sys_pmu.o"'
+### ADS-LD Command completed:
+--cpu Cortex-R4F --be32 
+"sys_main.o" "adc.o" "esm.o" "gio.o" "i2c.o" "lin.o" "mibspi.o" "notification.o" "pinmux.o" "sci.o" "het.o" "spi.o" "sys_dma.o" "sys_pcr.o" "sys_phantom.o" "sys_pmm.o" "sys_selftest.o" "sys_startup.o" "sys_vim.o" "system.o" "dabort.o" "sys_core.o" "sys_intvecs.o" "sys_mpu.o" "sys_pmu.o" --strict --scatter ".\source\sys_link.cmd" 
+--autoat --summary_stderr --info summarysizes --map --xref --callgraph --symbols 
+--info sizes --info totals --info unused --info veneers 
+ --list ".\TMS570ls3137.map" -o "TMS570ls3137.axf"### Preparing Environment (PrepEnvAds)
+### ADS-LD Output File: 'TMS570ls3137.axf'
+### ADS-LD Command File: 'TMS570ls3137.lnp'
+### Checking for dirty Components...
+### Creating CmdFile 'TMS570ls3137.lnp', Handle=0x000006DC
+### Writing '.lnp' file
+### ADS-LD Command file 'TMS570ls3137.lnp' is ready.
+### ADS-LD: About to start ADS-LD Thread.
+### ADS-LD: executed with 0 errors
+### Updating obj list
+### LDADS_file() completed.

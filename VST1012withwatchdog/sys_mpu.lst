@@ -1,0 +1,865 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000         ;-------------------------------------------------------
+                       ------------------------
+    2 00000000         ; sys_mpu.asm
+    3 00000000         ;
+    4 00000000         ; Copyright (C) 2009-2014 Texas Instruments Incorporated
+                        - http://www.ti.com/ 
+    5 00000000         ; 
+    6 00000000         ; 
+    7 00000000         ;  Redistribution and use in source and binary forms, wi
+                       th or without 
+    8 00000000         ;  modification, are permitted provided that the followi
+                       ng conditions 
+    9 00000000         ;  are met:
+   10 00000000         ;
+   11 00000000         ;    Redistributions of source code must retain the abov
+                       e copyright 
+   12 00000000         ;    notice, this list of conditions and the following d
+                       isclaimer.
+   13 00000000         ;
+   14 00000000         ;    Redistributions in binary form must reproduce the a
+                       bove copyright
+   15 00000000         ;    notice, this list of conditions and the following d
+                       isclaimer in the 
+   16 00000000         ;    documentation and/or other materials provided with 
+                       the   
+   17 00000000         ;    distribution.
+   18 00000000         ;
+   19 00000000         ;    Neither the name of Texas Instruments Incorporated 
+                       nor the names of
+   20 00000000         ;    its contributors may be used to endorse or promote 
+                       products derived
+   21 00000000         ;    from this software without specific prior written p
+                       ermission.
+   22 00000000         ;
+   23 00000000         ;  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AN
+                       D CONTRIBUTORS 
+   24 00000000         ;  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUD
+                       ING, BUT NOT 
+   25 00000000         ;  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+                        AND FITNESS FOR
+   26 00000000         ;  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHAL
+                       L THE COPYRIGHT 
+   27 00000000         ;  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIR
+                       ECT, INCIDENTAL, 
+   28 00000000         ;  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDI
+                       NG, BUT NOT 
+   29 00000000         ;  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVIC
+                       ES; LOSS OF USE,
+   30 00000000         ;  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER C
+                       AUSED AND ON ANY
+   31 00000000         ;  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIAB
+                       ILITY, OR TORT 
+   32 00000000         ;  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WA
+                       Y OUT OF THE USE 
+   33 00000000         ;  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+                       OF SUCH DAMAGE.
+   34 00000000         ;
+   35 00000000         ;
+   36 00000000         ;
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   37 00000000         
+   38 00000000                 area             |.text|, code, readonly
+   39 00000000                 arm
+   40 00000000         
+   41 00000000         
+   42 00000000         ;-------------------------------------------------------
+                       ------------------------
+   43 00000000         ; Initalize Mpu
+   44 00000000         ; SourceId : MPU_SourceId_001
+   45 00000000         ; DesignId : MPU_DesignId_001
+   46 00000000         ; Requirements : HL_SR487
+   47 00000000         
+   48 00000000                 export           _mpuInit_
+   49 00000000         
+   50 00000000         
+   51 00000000         _mpuInit_
+   52 00000000 E92D0001        stmfd            sp!, {r0}
+   53 00000004         ; Disable mpu
+   54 00000004 EE110F10        mrc              p15, #0, r0, c1, c0, #0
+   55 00000008 E3C00001        bic              r0,  r0, #1
+   56 0000000C F57FF04F        dsb
+   57 00000010 EE010F10        mcr              p15, #0, r0, c1, c0, #0
+   58 00000014 F57FF06F        isb
+   59 00000018         ; Disable background region
+   60 00000018 EE110F10        mrc              p15, #0, r0,      c1, c0, #0
+   61 0000001C E3C00802        bic              r0,  r0, #0x20000
+   62 00000020 EE010F10        mcr              p15, #0, r0,      c1, c0, #0
+   63 00000024         ; Setup region 1
+   64 00000024 E3A00000        mov              r0,  #0
+   65 00000028 EE060F12        mcr              p15, #0,    r0, c6, c2, #0
+   66 0000002C E59F01C8        ldr              r0,  r1Base
+   67 00000030 EE060F11        mcr              p15, #0,    r0, c6, c1, #0
+   68 00000034 E3A00008        mov              r0,  #0x0008
+   69 00000038 E3800A01        orr              r0,  r0,    #0x1000
+   70 0000003C EE060F91        mcr              p15, #0,    r0, c6, c1, #4
+   71 00000040 E30F0F3F        movw             r0,  #((1 << 15) + (1 << 14) + 
+(1 << 13) + (1 << 12) + (1 << 11) + (1 << 10) + (1 <<  9) + (1 <<  8) + (0x1F <
+< 1) + (1))
+   72 00000044 EE060F51        mcr              p15, #0,    r0, c6, c1, #2
+   73 00000048         ; Setup region 2
+   74 00000048 E3A00001        mov              r0,  #1
+   75 0000004C EE060F12        mcr              p15, #0,    r0, c6, c2, #0
+   76 00000050 E59F01A8        ldr              r0,  r2Base
+   77 00000054 EE060F11        mcr              p15, #0,    r0, c6, c1, #0
+   78 00000058 E3A00008        mov              r0,  #0x0008
+   79 0000005C E3800C06        orr              r0,  r0,    #0x0600
+   80 00000060 EE060F91        mcr              p15, #0,    r0, c6, c1, #4
+   81 00000064 E300002B        movw             r0,  #((0 << 15) + (0 << 14) + 
+(0 << 13) + (0 << 12) + (0 << 11) + (0 << 10) + (0 <<  9) + (0 <<  8) + (0x15 <
+< 1) + (1))
+   82 00000068 EE060F51        mcr              p15, #0,    r0, c6, c1, #2
+   83 0000006C         ; Setup region  
+   84 0000006C E3A00002        mov              r0,  #2
+   85 00000070 EE060F12        mcr              p15, #0,    r0, c6, c2, #0
+   86 00000074 E59F0188        ldr              r0,  r3Base
+   87 00000078 EE060F11        mcr              p15, #0,    r0, c6, c1, #0
+   88 0000007C E3A00008        mov              r0,  #0x0008
+   89 00000080 E3800C03        orr              r0,  r0,    #0x0300
+   90 00000084 EE060F91        mcr              p15, #0,    r0, c6, c1, #4
+
+
+
+ARM Macro Assembler    Page 3 
+
+
+   91 00000088 E3000023        movw             r0,  #((0 << 15) + (0 << 14) + 
+(0 << 13) + (0 << 12) + (0 << 11) + (0 << 10) + (0 <<  9) + (0 <<  8) + (0x11 <
+< 1) + (1))
+   92 0000008C EE060F51        mcr              p15, #0,    r0, c6, c1, #2
+   93 00000090         ; Setup region 4
+   94 00000090 E3A00003        mov              r0,  #3
+   95 00000094 EE060F12        mcr              p15, #0,    r0, c6, c2, #0
+   96 00000098 E59F0168        ldr              r0,  r4Base
+   97 0000009C EE060F11        mcr              p15, #0,    r0, c6, c1, #0
+   98 000000A0 E3A00008        mov              r0,  #0x0008
+   99 000000A4 E3800C03        orr              r0,  r0,    #0x0300
+  100 000000A8 EE060F91        mcr              p15, #0,    r0, c6, c1, #4
+  101 000000AC E3000023        movw             r0,  #((0 << 15) + (0 << 14) + 
+(0 << 13) + (0 << 12) + (0 << 11) + (0 << 10) + (0 <<  9) + (0 <<  8) + (0x11 <
+< 1) + (1))
+  102 000000B0 EE060F51        mcr              p15, #0,    r0, c6, c1, #2
+  103 000000B4         ; Setup region 5
+  104 000000B4 E3A00004        mov              r0,  #4
+  105 000000B8 EE060F12        mcr              p15, #0,    r0, c6, c2, #0
+  106 000000BC E59F0148        ldr              r0,  r5Base
+  107 000000C0 EE060F11        mcr              p15, #0,    r0, c6, c1, #0
+  108 000000C4 E3A00000        mov              r0,  #0x0000
+  109 000000C8 E3800C03        orr              r0,  r0,    #0x0300
+  110 000000CC EE060F91        mcr              p15, #0,    r0, c6, c1, #4
+  111 000000D0 E30C0033        movw             r0,  #((1 << 15) + (1 << 14) + 
+(0 << 13) + (0 << 12) + (0 << 11) + (0 << 10) + (0 <<  9) + (0 <<  8) + (0x19 <
+< 1) + (1))
+  112 000000D4 EE060F51        mcr              p15, #0,    r0, c6, c1, #2
+  113 000000D8         ; Setup region 6
+  114 000000D8 E3A00005        mov              r0,  #5
+  115 000000DC EE060F12        mcr              p15, #0,    r0, c6, c2, #0
+  116 000000E0 E59F0128        ldr              r0,  r6Base
+  117 000000E4 EE060F11        mcr              p15, #0,    r0, c6, c1, #0
+  118 000000E8 E3A00000        mov              r0,  #0x0000
+  119 000000EC E3800C03        orr              r0,  r0,    #0x0300
+  120 000000F0 EE060F91        mcr              p15, #0,    r0, c6, c1, #4
+  121 000000F4 E3000035        movw             r0,  #((0 << 15) + (0 << 14) + 
+(0 << 13) + (0 << 12) + (0 << 11) + (0 << 10) + (0 <<  9) + (0 <<  8) + (0x1A <
+< 1) + (1))
+  122 000000F8 EE060F51        mcr              p15, #0,    r0, c6, c1, #2
+  123 000000FC         ; Setup region 7
+  124 000000FC E3A00006        mov              r0,  #6
+  125 00000100 EE060F12        mcr              p15, #0,    r0, c6, c2, #0
+  126 00000104 E59F0108        ldr              r0,  r7Base
+  127 00000108 EE060F11        mcr              p15, #0,    r0, c6, c1, #0
+  128 0000010C E3A00008        mov              r0,  #0x0008
+  129 00000110 E3800C12        orr              r0,  r0,    #0x1200
+  130 00000114 EE060F91        mcr              p15, #0,    r0, c6, c1, #4
+  131 00000118 E300002D        movw             r0,  #((0 << 15) + (0 << 14) + 
+(0 << 13) + (0 << 12) + (0 << 11) + (0 << 10) + (0 <<  9) + (0 <<  8) + (0x16 <
+< 1) + (1))
+  132 0000011C EE060F51        mcr              p15, #0,    r0, c6, c1, #2
+  133 00000120         ; Setup region 8
+  134 00000120 E3A00007        mov              r0,  #7
+  135 00000124 EE060F12        mcr              p15, #0,    r0, c6, c2, #0
+  136 00000128 E59F00E8        ldr              r0,  r8Base
+  137 0000012C EE060F11        mcr              p15, #0,    r0, c6, c1, #0
+  138 00000130 E3A00010        mov              r0,  #0x0010
+  139 00000134 E3800C13        orr              r0,  r0,    #0x1300
+
+
+
+ARM Macro Assembler    Page 4 
+
+
+  140 00000138 EE060F91        mcr              p15, #0,    r0, c6, c1, #4
+  141 0000013C E300002F        movw             r0,  #((0 << 15) + (0 << 14) + 
+(0 << 13) + (0 << 12) + (0 << 11) + (0 << 10) + (0 <<  9) + (0 <<  8) + (0x17 <
+< 1) + (1))
+  142 00000140 EE060F51        mcr              p15, #0,    r0, c6, c1, #2
+  143 00000144         ; Setup region 9
+  144 00000144 E3A00008        mov              r0,  #8
+  145 00000148 EE060F12        mcr              p15, #0,    r0, c6, c2, #0
+  146 0000014C E59F00C8        ldr              r0,  r9Base
+  147 00000150 EE060F11        mcr              p15, #0,    r0, c6, c1, #0
+  148 00000154 E3A00010        mov              r0,  #0x0010
+  149 00000158 E3800C13        orr              r0,  r0,    #0x1300
+  150 0000015C EE060F91        mcr              p15, #0,    r0, c6, c1, #4
+  151 00000160 E3000011        movw             r0,  #((0 << 15) + (0 << 14) + 
+(0 << 13) + (0 << 12) + (0 << 11) + (0 << 10) + (0 <<  9) + (0 <<  8) + (0x08 <
+< 1) + (1))
+  152 00000164 EE060F51        mcr              p15, #0,    r0, c6, c1, #2
+  153 00000168         ; Setup region 10
+  154 00000168 E3A00009        mov              r0,  #9
+  155 0000016C EE060F12        mcr              p15, #0,    r0, c6, c2, #0
+  156 00000170 E59F00A8        ldr              r0,  r10Base
+  157 00000174 EE060F11        mcr              p15, #0,    r0, c6, c1, #0
+  158 00000178 E3A00010        mov              r0,  #0x0010
+  159 0000017C E3800C13        orr              r0,  r0,    #0x1300
+  160 00000180 EE060F91        mcr              p15, #0,    r0, c6, c1, #4
+  161 00000184 E300002F        movw             r0,  #((0 << 15) + (0 << 14) + 
+(0 << 13) + (0 << 12) + (0 << 11) + (0 << 10) + (0 <<  9) + (0 <<  8) + (0x17 <
+< 1) + (1))
+  162 00000188 EE060F51        mcr              p15, #0,    r0, c6, c1, #2
+  163 0000018C         ; Setup region 11
+  164 0000018C E3A0000A        mov              r0,  #10
+  165 00000190 EE060F12        mcr              p15, #0,    r0, c6, c2, #0
+  166 00000194 E59F0088        ldr              r0,  r11Base
+  167 00000198 EE060F11        mcr              p15, #0,    r0, c6, c1, #0
+  168 0000019C E3A00008        mov              r0,  #0x0008
+  169 000001A0 E3800C11        orr              r0,  r0,    #0x1100
+  170 000001A4 EE060F91        mcr              p15, #0,    r0, c6, c1, #4
+  171 000001A8 E30E0014        movw             r0,  #((1 << 15) + (1 << 14) + 
+(1 << 13) + (0 << 12) + (0 << 11) + (0 << 10) + (0 <<  9) + (0 <<  8) + (0x0A <
+< 1) + (0))
+  172 000001AC EE060F51        mcr              p15, #0,    r0, c6, c1, #2
+  173 000001B0         ; Setup region 12
+  174 000001B0 E3A0000B        mov              r0,  #11
+  175 000001B4 EE060F12        mcr              p15, #0,    r0, c6, c2, #0
+  176 000001B8 E59F0068        ldr              r0,  r12Base
+  177 000001BC EE060F11        mcr              p15, #0,    r0, c6, c1, #0
+  178 000001C0 E3A00008        mov              r0,  #0x0008
+  179 000001C4 E3800C13        orr              r0,  r0,    #0x1300
+  180 000001C8 EE060F91        mcr              p15, #0,    r0, c6, c1, #4
+  181 000001CC E30C002A        movw             r0,  #((1 << 15) + (1 << 14) + 
+(0 << 13) + (0 << 12) + (0 << 11) + (0 << 10) + (0 <<  9) + (0 <<  8) + (0x15 <
+< 1) + (0))
+  182 000001D0 EE060F51        mcr              p15, #0,    r0, c6, c1, #2
+  183 000001D4         
+  184 000001D4         
+  185 000001D4         ; Enable mpu background region
+  186 000001D4 EE110F10        mrc              p15, #0, r0,      c1, c0, #0
+  187 000001D8 E3800802        orr              r0,  r0, #0x20000
+  188 000001DC EE010F10        mcr              p15, #0, r0,      c1, c0, #0
+
+
+
+ARM Macro Assembler    Page 5 
+
+
+  189 000001E0         ; Enable mpu
+  190 000001E0 EE110F10        mrc              p15, #0, r0, c1, c0, #0
+  191 000001E4 E3800001        orr              r0,  r0, #1
+  192 000001E8 F57FF04F        dsb
+  193 000001EC EE010F10        mcr              p15, #0, r0, c1, c0, #0
+  194 000001F0 F57FF06F        isb
+  195 000001F4 E8BD0001        ldmfd            sp!, {r0}
+  196 000001F8 E12FFF1E        bx               lr
+  197 000001FC         
+  198 000001FC 00000000 
+                       r1Base  dcd              0x00000000
+  199 00000200 00000000 
+                       r2Base  dcd              0x00000000
+  200 00000204 08000000 
+                       r3Base  dcd              0x08000000
+  201 00000208 08400000 
+                       r4Base  dcd              0x08400000
+  202 0000020C 60000000 
+                       r5Base  dcd              0x60000000
+  203 00000210 80000000 
+                       r6Base  dcd              0x80000000
+  204 00000214 F0000000 
+                       r7Base  dcd              0xF0000000
+  205 00000218 FC000000 
+                       r8Base  dcd              0xFC000000
+  206 0000021C FE000000 
+                       r9Base  dcd              0xFE000000
+  207 00000220 FF000000 
+                       r10Base dcd              0xFF000000
+  208 00000224 08001000 
+                       r11Base dcd              0x08001000
+  209 00000228 20000000 
+                       r12Base dcd              0x20000000
+  210 0000022C         
+  211 0000022C         
+  212 0000022C         
+  213 0000022C         
+  214 0000022C         ;-------------------------------------------------------
+                       ------------------------
+  215 0000022C         ; Enable Mpu
+  216 0000022C         ; SourceId : MPU_SourceId_002
+  217 0000022C         ; DesignId : MPU_DesignId_002
+  218 0000022C         ; Requirements : HL_SR488
+  219 0000022C         
+  220 0000022C                 export           _mpuEnable_
+  221 0000022C         
+  222 0000022C         
+  223 0000022C         _mpuEnable_
+  224 0000022C         
+  225 0000022C E92D0001        stmfd            sp!, {r0}
+  226 00000230 EE110F10        mrc              p15, #0, r0, c1, c0, #0
+  227 00000234 E3800001        orr              r0,  r0, #1
+  228 00000238 F57FF04F        dsb
+  229 0000023C EE010F10        mcr              p15, #0, r0, c1, c0, #0
+  230 00000240 F57FF06F        isb
+  231 00000244 E8BD0001        ldmfd            sp!, {r0}
+  232 00000248 E12FFF1E        bx               lr
+  233 0000024C         
+  234 0000024C         
+
+
+
+ARM Macro Assembler    Page 6 
+
+
+  235 0000024C         
+  236 0000024C         
+  237 0000024C         ;-------------------------------------------------------
+                       ------------------------
+  238 0000024C         ; Disable Mpu
+  239 0000024C         ; SourceId : MPU_SourceId_003
+  240 0000024C         ; DesignId : MPU_DesignId_003
+  241 0000024C         ; Requirements : HL_SR488
+  242 0000024C         
+  243 0000024C                 export           _mpuDisable_
+  244 0000024C         
+  245 0000024C         
+  246 0000024C         _mpuDisable_
+  247 0000024C         
+  248 0000024C E92D0001        stmfd            sp!, {r0}
+  249 00000250 EE110F10        mrc              p15, #0, r0, c1, c0, #0
+  250 00000254 E3C00001        bic              r0,  r0, #1
+  251 00000258 F57FF04F        dsb
+  252 0000025C EE010F10        mcr              p15, #0, r0, c1, c0, #0
+  253 00000260 F57FF06F        isb
+  254 00000264 E8BD0001        ldmfd            sp!, {r0}
+  255 00000268 E12FFF1E        bx               lr
+  256 0000026C         
+  257 0000026C         
+  258 0000026C         
+  259 0000026C         
+  260 0000026C         ;-------------------------------------------------------
+                       ------------------------
+  261 0000026C         ; Enable Mpu background region
+  262 0000026C         ; SourceId : MPU_SourceId_004
+  263 0000026C         ; DesignId : MPU_DesignId_004
+  264 0000026C         ; Requirements : HL_SR488
+  265 0000026C         
+  266 0000026C                 export           _mpuEnableBackgroundRegion_
+  267 0000026C         
+  268 0000026C         
+  269 0000026C         _mpuEnableBackgroundRegion_
+  270 0000026C         
+  271 0000026C E92D0001        stmfd            sp!, {r0}
+  272 00000270 EE110F10        mrc              p15, #0, r0,      c1, c0, #0
+  273 00000274 E3800802        orr              r0,  r0, #0x20000
+  274 00000278 EE010F10        mcr              p15, #0, r0,      c1, c0, #0
+  275 0000027C E8BD0001        ldmfd            sp!, {r0}
+  276 00000280 E12FFF1E        bx               lr
+  277 00000284         
+  278 00000284         
+  279 00000284         
+  280 00000284         
+  281 00000284         ;-------------------------------------------------------
+                       ------------------------
+  282 00000284         ; Disable Mpu background region
+  283 00000284         ; SourceId : MPU_SourceId_005
+  284 00000284         ; DesignId : MPU_DesignId_005
+  285 00000284         ; Requirements : HL_SR488
+  286 00000284         
+  287 00000284                 export           _mpuDisableBackgroundRegion_
+  288 00000284         
+  289 00000284         
+  290 00000284         _mpuDisableBackgroundRegion_
+
+
+
+ARM Macro Assembler    Page 7 
+
+
+  291 00000284         
+  292 00000284 E92D0001        stmfd            sp!, {r0}
+  293 00000288 EE110F10        mrc              p15, #0, r0,      c1, c0, #0
+  294 0000028C E3C00802        bic              r0,  r0, #0x20000
+  295 00000290 EE010F10        mcr              p15, #0, r0,      c1, c0, #0
+  296 00000294 E8BD0001        ldmfd            sp!, {r0}
+  297 00000298 E12FFF1E        bx               lr
+  298 0000029C         
+  299 0000029C         
+  300 0000029C         
+  301 0000029C         
+  302 0000029C         ;-------------------------------------------------------
+                       ------------------------
+  303 0000029C         ; Returns number of implemented Mpu regions
+  304 0000029C         ; SourceId : MPU_SourceId_006
+  305 0000029C         ; DesignId : MPU_DesignId_006
+  306 0000029C         ; Requirements : HL_SR490
+  307 0000029C         
+  308 0000029C                 export           _mpuGetNumberOfRegions_
+  309 0000029C         
+  310 0000029C         
+  311 0000029C         _mpuGetNumberOfRegions_
+  312 0000029C         
+  313 0000029C EE100F90        mrc              p15, #0, r0,      c0, c0, #4
+  314 000002A0 E6EF0470        uxtb             r0,  r0, ROR #8
+  315 000002A4 E12FFF1E        bx               lr
+  316 000002A8         
+  317 000002A8         
+  318 000002A8         
+  319 000002A8         
+  320 000002A8         ;-------------------------------------------------------
+                       ------------------------
+  321 000002A8         ; Returns the type of the implemented mpu regions
+  322 000002A8         ; SourceId : MPU_SourceId_007
+  323 000002A8         ; DesignId : MPU_DesignId_007
+  324 000002A8         ; Requirements : HL_SR490
+  325 000002A8         
+  326 000002A8                 export           _mpuAreRegionsSeparate_
+  327 000002A8         
+  328 000002A8         
+  329 000002A8         _mpuAreRegionsSeparate_
+  330 000002A8         
+  331 000002A8 EE100F90        mrc              p15, #0, r0,      c0, c0, #4
+  332 000002AC E6EF0070        uxtb             r0,  r0
+  333 000002B0 E12FFF1E        bx               lr
+  334 000002B4         
+  335 000002B4         
+  336 000002B4         
+  337 000002B4         
+  338 000002B4         ;-------------------------------------------------------
+                       ------------------------
+  339 000002B4         ; Set mpu region number
+  340 000002B4         ; SourceId : MPU_SourceId_008
+  341 000002B4         ; DesignId : MPU_DesignId_008
+  342 000002B4         ; Requirements : HL_SR489
+  343 000002B4         
+  344 000002B4                 export           _mpuSetRegion_
+  345 000002B4         
+  346 000002B4         
+
+
+
+ARM Macro Assembler    Page 8 
+
+
+  347 000002B4         _mpuSetRegion_
+  348 000002B4         
+  349 000002B4 EE060F12        mcr              p15, #0, r0, c6, c2, #0
+  350 000002B8 E12FFF1E        bx               lr
+  351 000002BC         
+  352 000002BC         
+  353 000002BC         
+  354 000002BC         
+  355 000002BC         ;-------------------------------------------------------
+                       ------------------------
+  356 000002BC         ; Get mpu region number
+  357 000002BC         ; SourceId : MPU_SourceId_009
+  358 000002BC         ; DesignId : MPU_DesignId_009
+  359 000002BC         ; Requirements : HL_SR490
+  360 000002BC         
+  361 000002BC                 export           _mpuGetRegion_
+  362 000002BC         
+  363 000002BC         
+  364 000002BC         _mpuGetRegion_
+  365 000002BC         
+  366 000002BC EE160F12        mrc              p15, #0, r0, c6, c2, #0
+  367 000002C0 E12FFF1E        bx               lr
+  368 000002C4         
+  369 000002C4         
+  370 000002C4         
+  371 000002C4         
+  372 000002C4         ;-------------------------------------------------------
+                       ------------------------
+  373 000002C4         ; Set base address
+  374 000002C4         ; SourceId : MPU_SourceId_010
+  375 000002C4         ; DesignId : MPU_DesignId_010
+  376 000002C4         ; Requirements : HL_SR489
+  377 000002C4         
+  378 000002C4                 export           _mpuSetRegionBaseAddress_
+  379 000002C4         
+  380 000002C4         
+  381 000002C4         _mpuSetRegionBaseAddress_
+  382 000002C4         
+  383 000002C4 EE060F11        mcr              p15, #0, r0, c6, c1, #0
+  384 000002C8 E12FFF1E        bx               lr
+  385 000002CC         
+  386 000002CC         
+  387 000002CC         
+  388 000002CC         
+  389 000002CC         ;-------------------------------------------------------
+                       ------------------------
+  390 000002CC         ; Get base address
+  391 000002CC         ; SourceId : MPU_SourceId_011
+  392 000002CC         ; DesignId : MPU_DesignId_011
+  393 000002CC         ; Requirements : HL_SR490
+  394 000002CC         
+  395 000002CC                 export           _mpuGetRegionBaseAddress_
+  396 000002CC         
+  397 000002CC         
+  398 000002CC         _mpuGetRegionBaseAddress_
+  399 000002CC         
+  400 000002CC EE160F11        mrc              p15, #0, r0, c6, c1, #0
+  401 000002D0 E12FFF1E        bx               lr
+  402 000002D4         
+
+
+
+ARM Macro Assembler    Page 9 
+
+
+  403 000002D4         
+  404 000002D4         
+  405 000002D4         
+  406 000002D4         ;-------------------------------------------------------
+                       ------------------------
+  407 000002D4         ; Set type and permission
+  408 000002D4         ; SourceId : MPU_SourceId_012
+  409 000002D4         ; DesignId : MPU_DesignId_012
+  410 000002D4         ; Requirements : HL_SR489
+  411 000002D4         
+  412 000002D4                 export           _mpuSetRegionTypeAndPermission_
+  413 000002D4         
+  414 000002D4         
+  415 000002D4         _mpuSetRegionTypeAndPermission_
+  416 000002D4         
+  417 000002D4 E1800001        orr              r0,  r0, r1
+  418 000002D8 EE060F91        mcr              p15, #0, r0, c6, c1, #4
+  419 000002DC E12FFF1E        bx               lr
+  420 000002E0         
+  421 000002E0         
+  422 000002E0         
+  423 000002E0         
+  424 000002E0         ;-------------------------------------------------------
+                       ------------------------
+  425 000002E0         ; Get type
+  426 000002E0         ; SourceId : MPU_SourceId_013
+  427 000002E0         ; DesignId : MPU_DesignId_013
+  428 000002E0         ; Requirements : HL_SR490
+  429 000002E0         
+  430 000002E0                 export           _mpuGetRegionType_
+  431 000002E0         
+  432 000002E0         
+  433 000002E0         _mpuGetRegionType_
+  434 000002E0         
+  435 000002E0 EE160F91        mrc              p15, #0, r0,     c6, c1, #4
+  436 000002E4 E3C00CFF        bic              r0,  r0, #0xFF00
+  437 000002E8 E12FFF1E        bx               lr
+  438 000002EC         
+  439 000002EC         
+  440 000002EC         
+  441 000002EC         
+  442 000002EC         ;-------------------------------------------------------
+                       ------------------------
+  443 000002EC         ; Get permission
+  444 000002EC         ; SourceId : MPU_SourceId_014
+  445 000002EC         ; DesignId : MPU_DesignId_014
+  446 000002EC         ; Requirements : HL_SR490
+  447 000002EC         
+  448 000002EC                 export           _mpuGetRegionPermission_
+  449 000002EC         
+  450 000002EC         
+  451 000002EC         _mpuGetRegionPermission_
+  452 000002EC         
+  453 000002EC EE160F91        mrc              p15, #0, r0,   c6, c1, #4
+  454 000002F0 E3C000FF        bic              r0,  r0, #0xFF
+  455 000002F4 E12FFF1E        bx               lr
+  456 000002F8         
+  457 000002F8         
+  458 000002F8         
+
+
+
+ARM Macro Assembler    Page 10 
+
+
+  459 000002F8         
+  460 000002F8         ;-------------------------------------------------------
+                       ------------------------
+  461 000002F8         ; Set region size register value
+  462 000002F8         ; SourceId : MPU_SourceId_015
+  463 000002F8         ; DesignId : MPU_DesignId_015
+  464 000002F8         ; Requirements : HL_SR489
+  465 000002F8         
+  466 000002F8                 export           _mpuSetRegionSizeRegister_
+  467 000002F8         
+  468 000002F8         
+  469 000002F8         _mpuSetRegionSizeRegister_
+  470 000002F8         
+  471 000002F8         
+  472 000002F8 EE060F51        mcr              p15, #0, r0, c6, c1, #2
+  473 000002FC E12FFF1E        bx               lr
+  474 00000300         
+  475 00000300         
+  476 00000300         
+  477 00000300                 end
+Command Line: --debug --xref --cpu=Cortex-R4F --bi --apcs=interwork --depend=.\
+sys_mpu.d -o.\sys_mpu.o -I"D:\Program Files\Keil\ARM\RV31\INC" -I"D:\Program Fi
+les\Keil\ARM\CMSIS\Include" -I"D:\Program Files\Keil\ARM\Inc\TI" --list=.\sys_m
+pu.lst source\sys_mpu.asm
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+.text 00000000
+
+Symbol: .text
+   Definitions
+      At line 38 in file source\sys_mpu.asm
+   Uses
+      None
+Comment: .text unused
+_mpuAreRegionsSeparate_ 000002A8
+
+Symbol: _mpuAreRegionsSeparate_
+   Definitions
+      At line 329 in file source\sys_mpu.asm
+   Uses
+      At line 326 in file source\sys_mpu.asm
+Comment: _mpuAreRegionsSeparate_ used once
+_mpuDisableBackgroundRegion_ 00000284
+
+Symbol: _mpuDisableBackgroundRegion_
+   Definitions
+      At line 290 in file source\sys_mpu.asm
+   Uses
+      At line 287 in file source\sys_mpu.asm
+Comment: _mpuDisableBackgroundRegion_ used once
+_mpuDisable_ 0000024C
+
+Symbol: _mpuDisable_
+   Definitions
+      At line 246 in file source\sys_mpu.asm
+   Uses
+      At line 243 in file source\sys_mpu.asm
+Comment: _mpuDisable_ used once
+_mpuEnableBackgroundRegion_ 0000026C
+
+Symbol: _mpuEnableBackgroundRegion_
+   Definitions
+      At line 269 in file source\sys_mpu.asm
+   Uses
+      At line 266 in file source\sys_mpu.asm
+Comment: _mpuEnableBackgroundRegion_ used once
+_mpuEnable_ 0000022C
+
+Symbol: _mpuEnable_
+   Definitions
+      At line 223 in file source\sys_mpu.asm
+   Uses
+      At line 220 in file source\sys_mpu.asm
+Comment: _mpuEnable_ used once
+_mpuGetNumberOfRegions_ 0000029C
+
+Symbol: _mpuGetNumberOfRegions_
+   Definitions
+      At line 311 in file source\sys_mpu.asm
+   Uses
+      At line 308 in file source\sys_mpu.asm
+Comment: _mpuGetNumberOfRegions_ used once
+_mpuGetRegionBaseAddress_ 000002CC
+
+Symbol: _mpuGetRegionBaseAddress_
+
+
+
+ARM Macro Assembler    Page 2 Alphabetic symbol ordering
+Relocatable symbols
+
+   Definitions
+      At line 398 in file source\sys_mpu.asm
+   Uses
+      At line 395 in file source\sys_mpu.asm
+Comment: _mpuGetRegionBaseAddress_ used once
+_mpuGetRegionPermission_ 000002EC
+
+Symbol: _mpuGetRegionPermission_
+   Definitions
+      At line 451 in file source\sys_mpu.asm
+   Uses
+      At line 448 in file source\sys_mpu.asm
+Comment: _mpuGetRegionPermission_ used once
+_mpuGetRegionType_ 000002E0
+
+Symbol: _mpuGetRegionType_
+   Definitions
+      At line 433 in file source\sys_mpu.asm
+   Uses
+      At line 430 in file source\sys_mpu.asm
+Comment: _mpuGetRegionType_ used once
+_mpuGetRegion_ 000002BC
+
+Symbol: _mpuGetRegion_
+   Definitions
+      At line 364 in file source\sys_mpu.asm
+   Uses
+      At line 361 in file source\sys_mpu.asm
+Comment: _mpuGetRegion_ used once
+_mpuInit_ 00000000
+
+Symbol: _mpuInit_
+   Definitions
+      At line 51 in file source\sys_mpu.asm
+   Uses
+      At line 48 in file source\sys_mpu.asm
+Comment: _mpuInit_ used once
+_mpuSetRegionBaseAddress_ 000002C4
+
+Symbol: _mpuSetRegionBaseAddress_
+   Definitions
+      At line 381 in file source\sys_mpu.asm
+   Uses
+      At line 378 in file source\sys_mpu.asm
+Comment: _mpuSetRegionBaseAddress_ used once
+_mpuSetRegionSizeRegister_ 000002F8
+
+Symbol: _mpuSetRegionSizeRegister_
+   Definitions
+      At line 469 in file source\sys_mpu.asm
+   Uses
+      At line 466 in file source\sys_mpu.asm
+Comment: _mpuSetRegionSizeRegister_ used once
+_mpuSetRegionTypeAndPermission_ 000002D4
+
+Symbol: _mpuSetRegionTypeAndPermission_
+   Definitions
+      At line 415 in file source\sys_mpu.asm
+   Uses
+
+
+
+ARM Macro Assembler    Page 3 Alphabetic symbol ordering
+Relocatable symbols
+
+      At line 412 in file source\sys_mpu.asm
+Comment: _mpuSetRegionTypeAndPermission_ used once
+_mpuSetRegion_ 000002B4
+
+Symbol: _mpuSetRegion_
+   Definitions
+      At line 347 in file source\sys_mpu.asm
+   Uses
+      At line 344 in file source\sys_mpu.asm
+Comment: _mpuSetRegion_ used once
+r10Base 00000220
+
+Symbol: r10Base
+   Definitions
+      At line 207 in file source\sys_mpu.asm
+   Uses
+      At line 156 in file source\sys_mpu.asm
+Comment: r10Base used once
+r11Base 00000224
+
+Symbol: r11Base
+   Definitions
+      At line 208 in file source\sys_mpu.asm
+   Uses
+      At line 166 in file source\sys_mpu.asm
+Comment: r11Base used once
+r12Base 00000228
+
+Symbol: r12Base
+   Definitions
+      At line 209 in file source\sys_mpu.asm
+   Uses
+      At line 176 in file source\sys_mpu.asm
+Comment: r12Base used once
+r1Base 000001FC
+
+Symbol: r1Base
+   Definitions
+      At line 198 in file source\sys_mpu.asm
+   Uses
+      At line 66 in file source\sys_mpu.asm
+Comment: r1Base used once
+r2Base 00000200
+
+Symbol: r2Base
+   Definitions
+      At line 199 in file source\sys_mpu.asm
+   Uses
+      At line 76 in file source\sys_mpu.asm
+Comment: r2Base used once
+r3Base 00000204
+
+Symbol: r3Base
+   Definitions
+      At line 200 in file source\sys_mpu.asm
+   Uses
+      At line 86 in file source\sys_mpu.asm
+Comment: r3Base used once
+r4Base 00000208
+
+
+
+ARM Macro Assembler    Page 4 Alphabetic symbol ordering
+Relocatable symbols
+
+
+Symbol: r4Base
+   Definitions
+      At line 201 in file source\sys_mpu.asm
+   Uses
+      At line 96 in file source\sys_mpu.asm
+Comment: r4Base used once
+r5Base 0000020C
+
+Symbol: r5Base
+   Definitions
+      At line 202 in file source\sys_mpu.asm
+   Uses
+      At line 106 in file source\sys_mpu.asm
+Comment: r5Base used once
+r6Base 00000210
+
+Symbol: r6Base
+   Definitions
+      At line 203 in file source\sys_mpu.asm
+   Uses
+      At line 116 in file source\sys_mpu.asm
+Comment: r6Base used once
+r7Base 00000214
+
+Symbol: r7Base
+   Definitions
+      At line 204 in file source\sys_mpu.asm
+   Uses
+      At line 126 in file source\sys_mpu.asm
+Comment: r7Base used once
+r8Base 00000218
+
+Symbol: r8Base
+   Definitions
+      At line 205 in file source\sys_mpu.asm
+   Uses
+      At line 136 in file source\sys_mpu.asm
+Comment: r8Base used once
+r9Base 0000021C
+
+Symbol: r9Base
+   Definitions
+      At line 206 in file source\sys_mpu.asm
+   Uses
+      At line 146 in file source\sys_mpu.asm
+Comment: r9Base used once
+28 symbols
+359 symbols in table

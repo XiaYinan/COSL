@@ -1,0 +1,185 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000         ;-------------------------------------------------------
+                       ------------------------
+    2 00000000         ; sys_intvecs.asm
+    3 00000000         ;
+    4 00000000         ; Copyright (C) 2009-2014 Texas Instruments Incorporated
+                        - http://www.ti.com/ 
+    5 00000000         ; 
+    6 00000000         ; 
+    7 00000000         ;  Redistribution and use in source and binary forms, wi
+                       th or without 
+    8 00000000         ;  modification, are permitted provided that the followi
+                       ng conditions 
+    9 00000000         ;  are met:
+   10 00000000         ;
+   11 00000000         ;    Redistributions of source code must retain the abov
+                       e copyright 
+   12 00000000         ;    notice, this list of conditions and the following d
+                       isclaimer.
+   13 00000000         ;
+   14 00000000         ;    Redistributions in binary form must reproduce the a
+                       bove copyright
+   15 00000000         ;    notice, this list of conditions and the following d
+                       isclaimer in the 
+   16 00000000         ;    documentation and/or other materials provided with 
+                       the   
+   17 00000000         ;    distribution.
+   18 00000000         ;
+   19 00000000         ;    Neither the name of Texas Instruments Incorporated 
+                       nor the names of
+   20 00000000         ;    its contributors may be used to endorse or promote 
+                       products derived
+   21 00000000         ;    from this software without specific prior written p
+                       ermission.
+   22 00000000         ;
+   23 00000000         ;  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AN
+                       D CONTRIBUTORS 
+   24 00000000         ;  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUD
+                       ING, BUT NOT 
+   25 00000000         ;  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+                        AND FITNESS FOR
+   26 00000000         ;  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHAL
+                       L THE COPYRIGHT 
+   27 00000000         ;  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIR
+                       ECT, INCIDENTAL, 
+   28 00000000         ;  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDI
+                       NG, BUT NOT 
+   29 00000000         ;  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVIC
+                       ES; LOSS OF USE,
+   30 00000000         ;  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER C
+                       AUSED AND ON ANY
+   31 00000000         ;  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIAB
+                       ILITY, OR TORT 
+   32 00000000         ;  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WA
+                       Y OUT OF THE USE 
+   33 00000000         ;  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+                       OF SUCH DAMAGE.
+   34 00000000         ;
+   35 00000000         ;
+   36 00000000         ;
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   37 00000000         
+   38 00000000                 area             intvecs, code, readonly
+   39 00000000                 arm
+   40 00000000         
+   41 00000000         ;-------------------------------------------------------
+                       ------------------------
+   42 00000000         ; import reference for interrupt routines
+   43 00000000         
+   44 00000000                 import           _c_int00
+   45 00000000                 import           _dabort
+   46 00000000                 import           phantomInterrupt
+   47 00000000                 export           resetEntry
+   48 00000000         
+   49 00000000         ;-------------------------------------------------------
+                       ------------------------
+   50 00000000         ; interrupt vectors
+   51 00000000         
+   52 00000000         resetEntry
+   53 00000000 EAFFFFFE        b                _c_int00
+   54 00000004         undefEntry
+   55 00000004 EAFFFFFE        b                undefEntry
+   56 00000008         svcEntry
+   57 00000008 EAFFFFFE        b                svcEntry
+   58 0000000C         prefetchEntry
+   59 0000000C EAFFFFFE        b                prefetchEntry
+   60 00000010 EAFFFFFE        b                _dabort
+   61 00000014 EAFFFFFE        b                phantomInterrupt
+   62 00000018 E51FF1B0        ldr              pc,[pc,#-0x1b0]
+   63 0000001C E51FF1B0        ldr              pc,[pc,#-0x1b0]
+   64 00000020         
+   65 00000020                 end
+Command Line: --debug --xref --cpu=Cortex-R4F --bi --apcs=interwork --depend=.\
+sys_intvecs.d -o.\sys_intvecs.o -I"D:\Program Files\Keil\ARM\RV31\INC" -I"D:\Pr
+ogram Files\Keil\ARM\CMSIS\Include" -I"D:\Program Files\Keil\ARM\Inc\TI" --list
+=.\sys_intvecs.lst source\sys_intvecs.asm
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+intvecs 00000000
+
+Symbol: intvecs
+   Definitions
+      At line 38 in file source\sys_intvecs.asm
+   Uses
+      None
+Comment: intvecs unused
+prefetchEntry 0000000C
+
+Symbol: prefetchEntry
+   Definitions
+      At line 58 in file source\sys_intvecs.asm
+   Uses
+      At line 59 in file source\sys_intvecs.asm
+Comment: prefetchEntry used once
+resetEntry 00000000
+
+Symbol: resetEntry
+   Definitions
+      At line 52 in file source\sys_intvecs.asm
+   Uses
+      At line 47 in file source\sys_intvecs.asm
+Comment: resetEntry used once
+svcEntry 00000008
+
+Symbol: svcEntry
+   Definitions
+      At line 56 in file source\sys_intvecs.asm
+   Uses
+      At line 57 in file source\sys_intvecs.asm
+Comment: svcEntry used once
+undefEntry 00000004
+
+Symbol: undefEntry
+   Definitions
+      At line 54 in file source\sys_intvecs.asm
+   Uses
+      At line 55 in file source\sys_intvecs.asm
+Comment: undefEntry used once
+5 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+External symbols
+
+_c_int00 00000000
+
+Symbol: _c_int00
+   Definitions
+      At line 44 in file source\sys_intvecs.asm
+   Uses
+      At line 53 in file source\sys_intvecs.asm
+Comment: _c_int00 used once
+_dabort 00000000
+
+Symbol: _dabort
+   Definitions
+      At line 45 in file source\sys_intvecs.asm
+   Uses
+      At line 60 in file source\sys_intvecs.asm
+Comment: _dabort used once
+phantomInterrupt 00000000
+
+Symbol: phantomInterrupt
+   Definitions
+      At line 46 in file source\sys_intvecs.asm
+   Uses
+      At line 61 in file source\sys_intvecs.asm
+Comment: phantomInterrupt used once
+3 symbols
+339 symbols in table

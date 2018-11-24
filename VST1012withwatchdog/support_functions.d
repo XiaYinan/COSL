@@ -1,0 +1,10 @@
+.\support_functions.o: support_functions.c
+.\support_functions.o: .\include\adc.h
+.\support_functions.o: .\include\reg_adc.h
+.\support_functions.o: .\include\sys_common.h
+.\support_functions.o: .\include\hal_stdtypes.h
+.\support_functions.o: D:\Keil4\ARM\ARMCC\bin\..\include\stdint.h
+.\support_functions.o: D:\Keil4\ARM\ARMCC\bin\..\include\stdbool.h
+.\support_functions.o: .\include\sci.h
+.\support_functions.o: .\include\reg_sci.h
+.\support_functions.o: .\include\reg_gio.h
