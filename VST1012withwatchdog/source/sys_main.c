@@ -1,7 +1,7 @@
 /*
 *********************************************************************************************************
 *                                                VSTOS-I
-*                                          VSN: VST_1.2.30
+*                                          VSN: VST_2.18.6
 *                              Used for DSM measure the vibration of downhole.
 *                              (c) Copyright 2016-2026, COSL, WELL-TECH INSTITUTE, LWD TEAM
 *                                           All Rights Reserved
@@ -14,6 +14,7 @@
 #include "sys_common.h"
 
 /* USER CODE BEGIN (1) */
+
 #include "spi.h"
 #include "sys_core.h"
 #include "sci.h"
@@ -62,6 +63,10 @@ float acczfloatsend,acczfloatavg=0;
 float accxfloatsend,accxfloatavg=0;
 float accyfloatsend,accyfloatavg=0;
 uint8 rcvdata[64] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};			/* UART receive data buffer */
+uint16  ReadFlagStatusData[2] = {0x70, 0x00};
+uint16	ReceiveFlagStatusData[2]	= { 0 };
+uint16	ReadStatusData[2]	= { 0x05, 0x00 };
+uint16	ReceiveStatusData[2]	= { 0 };
 unsigned char i_rcv = 0;												/* UART receive data pointer */
 uint16 accx_2k_buf0[10240], accy_2k_buf0[10240],	accz_2k_buf0[10240], accr_2k_buf0[10240];	/* 1kHz sampling data buffers for accx, accy, accz (8x accumulation results)*/
 uint16 accx_2k_buf1[10240], accy_2k_buf1[10240],	accz_2k_buf1[10240], accr_2k_buf1[10240];	/* 1kHz sampling data buffers for accx, accy, accz (8x accumulation results)*/
@@ -80,7 +85,7 @@ int rtemperature_f0=0;
 unsigned char bComHighSpeed = 0;	/* indicate the COM speed, 0__9600bps, 1__115200bps*/
 unsigned int sav_addr0 = 0xf6dce00;			/* Global address of character data storage, the range is 0x10000000~0x14000000 */
 unsigned int * psav_addr1;        // pointer for sav_addr1
-/*  Address table for ininialization */   //flash 原始数据 地址 sav_addr1_xy0z0r0 xy z r量级为0
+/*  Address table for ininialization */
 unsigned int sav_addr1_xy0z0r0=0x0000000, sav_addr1_xy0z0r1=0x01A5500, sav_addr1_xy0z0r2=0x034AA00, sav_addr1_xy0z0r3=0x04EFF00, sav_addr1_xy0z0r4=0x0695400, sav_addr1_xy0z0r5=0x083A900;
 unsigned int sav_addr1_xy0z1r0=0x09DFE00, sav_addr1_xy0z1r1=0x0B85300, sav_addr1_xy0z1r2=0x0D2A800, sav_addr1_xy0z1r3=0x0ECFD00, sav_addr1_xy0z1r4=0x1075200, sav_addr1_xy0z1r5=0x121A700;
 unsigned int sav_addr1_xy0z2r0=0x13BFC00, sav_addr1_xy0z2r1=0x1565100, sav_addr1_xy0z2r2=0x170A600, sav_addr1_xy0z2r3=0x18AFB00, sav_addr1_xy0z2r4=0x1A55000, sav_addr1_xy0z2r5=0x1BFA500;
@@ -157,6 +162,7 @@ float xy1float,xy2float,xy3float,xy4float,xy5float=0;  //threshold value to cali
 uint32 z1,z2,z3,z4,z5=0;                  //threshold value to calibrate the vibration of axis z
 float z1float,z2float,z3float,z4float,z5float=0;  //threshold value to calibrate the vibration of axis z (float)
 float  arfloat,brfloat,crfloat,drfloat=0;
+int i=0;
 int tmp;
 int ovtime = 0;
 int ovtimeX = 0;
@@ -186,6 +192,11 @@ uint64 tool_ID=0;
 uint8 tool_ID0=0,tool_ID1=0,tool_ID2=0,tool_ID3=0,tool_ID4=0,tool_ID5=0,tool_ID6=0,tool_ID7=0;
 uint16 CHKS=0;           //checksum value
 uint8 mode=0x00;
+
+uint16 *ipWord;
+uint8 itemp;
+//const char FW_Version[]="VST2.18.61";       //unified the version management 2018.6锟铰碉拷一锟芥，2018.6.5
+const char FW_Version[]="VST2.18.62";    //modify rtc driver --> UTC to BJT
 /* for int-float transfer */
 uint32 *pword;
 char *p ;
@@ -220,15 +231,17 @@ void spi1sendByte(uint8 x);
 void spi2sendByte(uint8 x);
 void bulk_erase_character(void);
 void bulk_erase_primitive(void);
+void bulk_erase_test(void);
+void bulk_erase(void);
 void read_LB(uint32 addr_read);
 /*  FM operation  */
 void FMWREN (void);
 uint8 ReadFMByte(uint16 addr);
 void WriteFMByte(uint16 addr, uint8 data);
 void WriteFM4Bytes(uint32 x,uint32 firstaddr);
-#define debug
+//#define debug
 #define watchdog
-#define leveldebug
+
 /* USER CODE END */
 #pragma diag_suppress=951
 
@@ -236,7 +249,7 @@ void main(void)
 {
 /* USER CODE BEGIN (3) */
 #ifdef watchdog
-	rtiREG1->DWDPRLD=0xFFF;      //set watchdog preload counter  看门狗 n秒
+	rtiREG1->DWDPRLD=0xFFF;      //set watchdog preload counter
 	rtiREG1->DWDCTRL=0xA98559DA; //enable watchdog
 #endif	
 	gioInit();
@@ -247,13 +260,13 @@ void main(void)
 	_enable_interrupt_();
 	UART_init();
 	ADC_init();
-	dataconfig1_t.CS_HOLD	= 0;   //SPI相关
+	dataconfig1_t.CS_HOLD	= 0;
 	dataconfig1_t.WDEL	= 1;
 	dataconfig1_t.DFSEL	= SPI_FMT_0;
 	dataconfig1_t.CSNR	= 0;
 	i2cInit();
-	recovery();			//断电恢复
-#ifndef debug
+	recovery();
+#ifdef debug
 	sciDisableNotification(scilinREG,SCI_RX_INT);		 //for debug			///////////2016.09.05
 	gioSetBit(gioPORTA,2,1);
 	MysciSendByte(0x67);  //for debug
@@ -263,11 +276,11 @@ void main(void)
 	while(1)
 	{
 #ifdef watchdog
-		rtiREG1->WDKEY=0xE51A;   //feed the watchdog  //喂狗
+		rtiREG1->WDKEY=0xE51A;   //feed the watchdog
 		rtiREG1->WDKEY=0xA35C;	 //feed the watchdog
 #endif
 		/*********** I2C temperature sampling and time recording process start ************/
-		switch ( bi2cstat )		//IIC
+		switch ( bi2cstat )
 		{
 			/*********** I2C temperature sampling process start ************/
 		case 0:
@@ -578,13 +591,13 @@ void main(void)
 		}
 		/************* I2C temperature sampling and time recording process end ************/
 		/***************************** UART Receive loop start ****************************/
-		switch(brxstat)			//串口接收
+		switch(brxstat)
 		{
 		case 0:
 			if(i_rcv != 0)
 			{
 				ovtimeX=0;
-				rxdata = rcvdata[i_rcv];		//第一字节
+				rxdata = rcvdata[i_rcv];
 				i_rcv--;
 				if(rxdata == 0x05)		    // read UART status
 					brxstat = 1;
@@ -817,7 +830,7 @@ void main(void)
 			WriteFMByte(0x0000, bSave);
 		  bSaveFM=1;
 			sendmode=0;
-			bSave=0;
+//			bSave=0;
 			data[0]=0x0003;
 			data[1]=(bComHighSpeed<<8)|sendmode;
 			data[2]=0xff00|mode;
@@ -1287,7 +1300,7 @@ void main(void)
 				brxstat = 40;
 			break;
 		case 41:
-			MysciSend(data);		//写硬件ID
+			MysciSend(data);
 			FMWREN ();
 			WriteFMByte(0x0010, tool_ID0);
 			FMWREN ();
@@ -1359,11 +1372,19 @@ void main(void)
 			break;
 		case 45:
 			data[0]=0x0006;     // const char FW_Version[]="VST_1.2.30";
-			data[1]=0x5653;
+			/*
+		  data[1]=0x5653;
 			data[2]=0x545f;
 			data[3]=0x312e;
 			data[4]=0x322e;
 			data[5]=0x3330;
+		  */
+		  ipWord = (uint16*)FW_Version;
+			for(itemp = 1; itemp <6; itemp++)
+			{
+					data[itemp] = *ipWord;
+					ipWord++;
+			}
 			data[6]=data[0]^data[1]^data[2]^data[3]^data[4]^data[5]^0xffff;
 			MysciSend(data);
 			brxstat = 0;
@@ -2298,12 +2319,12 @@ void main(void)
 		case 97:
 			data[0]=0x0001;
 			data[1]=bulk_select;
-			MysciSend(data);			  //开始擦除
+			MysciSend(data);			  //锟斤拷始锟斤拷锟斤拷
 			if(bulk_select==0x01)
 				bulk_erase_character();
 			else
 				bulk_erase_primitive();
-			MysciSend(data);		     //擦除结束
+			MysciSend(data);		     //锟斤拷锟斤拷锟斤拷锟斤拷
 			brxstat = 0;
 			break;
 		case 98:         // read N LB
@@ -4956,7 +4977,7 @@ void main(void)
 			data[22]=(z3&0x0000ffff);    //read z3
 			data[23]=((z4&0xffff0000)>>16);
 			data[24]=(z4&0x0000ffff);    //read z4						
-			data[29]=data[0]^data[1]^data[2]^data[3]^data[4]^data[5]^data[6]^data[7]^data[8]^data[9]^data[10]^data[11]^data[12]^data[13]^data[14]^data[15]^data[16]^data[17]^data[18]^data[19]^data[20]^data[21]^data[22]^data[23]^data[24]^0xffff;
+			data[25]=data[0]^data[1]^data[2]^data[3]^data[4]^data[5]^data[6]^data[7]^data[8]^data[9]^data[10]^data[11]^data[12]^data[13]^data[14]^data[15]^data[16]^data[17]^data[18]^data[19]^data[20]^data[21]^data[22]^data[23]^data[24]^0xffff;
 			MysciSend(data);
 			brxstat = 0;
 			break;
@@ -5023,7 +5044,7 @@ void main(void)
 		}
 		/***************************** UART Receive loop end   ****************************/
 		/***************************** UART transmit loop start ***************************/
-		switch(btxstat)		//串口发送	
+		switch(btxstat)	
 		{
 		case 0:
 			if(bstart_tx)
@@ -5163,14 +5184,14 @@ void main(void)
 		}
 		/***************************** UART transmit loop end *****************************/
 		/************************* Flash Memory Saving loop start *************************/
-		switch(sav_stat)		//写Flash
+		switch(sav_stat)
 		{
 		case 0:
 			if(bSave)
 			{
 
 				bSaveFM=1;
-#ifndef debug
+#ifdef debug
 				sciDisableNotification(scilinREG,SCI_RX_INT);		 //for debug			///////////2016.09.05
 				gioSetBit(gioPORTA,2,1);
 				MysciSendByte(0x01);  //for debug
@@ -5207,13 +5228,20 @@ void main(void)
 			}
 			break;
 		case 2:
-			if(bAdc)
+			if(bAdc==1)
 			{
 				bAdc=0;
 				sav_stat=3;
 			}
 			break;
 		case 3:
+#ifdef debug
+				sciDisableNotification(scilinREG,SCI_RX_INT);		 //for debug			///////////2016.09.05
+				gioSetBit(gioPORTA,2,1);
+				MysciSendByte(0x02);  //for debug
+				gioSetBit(gioPORTA,2,0);
+				sciEnableNotification(scilinREG,SCI_RX_INT);
+#endif	
 			for(ia2k_sav_cnt=0; ia2k_sav_cnt<10240; ia2k_sav_cnt++)
 			{
 				if (adcflag==0)
@@ -5256,6 +5284,13 @@ void main(void)
 			sav_stat=5;
 			break;
 		case 5:
+#ifdef debug
+				sciDisableNotification(scilinREG,SCI_RX_INT);		 //for debug			///////////2016.09.05
+				gioSetBit(gioPORTA,2,1);
+				MysciSendByte(0x03);  //for debug
+				gioSetBit(gioPORTA,2,0);
+				sciEnableNotification(scilinREG,SCI_RX_INT);
+#endif	
 			rms_sec_cur_x = rms_sum_sec_x/10240;  //normalization
 			rms_sec_cur_y = rms_sum_sec_y/10240;
 			rms_sec_cur_z = rms_sum_sec_z/10240;
@@ -6604,6 +6639,13 @@ void main(void)
 				}
 				break;
 			case 4:
+#ifdef debug
+				sciDisableNotification(scilinREG,SCI_RX_INT);		 //for debug			///////////2016.09.05
+				gioSetBit(gioPORTA,2,1);
+				MysciSendByte(0x03);  //for debug
+				gioSetBit(gioPORTA,2,0);
+				sciEnableNotification(scilinREG,SCI_RX_INT);
+#endif	
 				switch(zlevel)
 				{
 				case 0:
@@ -6937,13 +6979,80 @@ void main(void)
 			}
 			break;
 		case 10:		
-#ifndef debug
+#ifdef debug
 				sciDisableNotification(scilinREG,SCI_RX_INT);		 //for debug			///////////2016.09.05
 				gioSetBit(gioPORTA,2,1);
 				MysciSendByte(0x10);  //for debug
 				gioSetBit(gioPORTA,2,0);
 				sciEnableNotification(scilinREG,SCI_RX_INT);
 #endif	
+				for(i=0;i<4;i++)
+				{
+					tmp_spi=0xff;
+					while ( (tmp_spi & 0x01) == 0x01 )
+					{
+						switch ( i )
+						{
+						case 0: /* Flash F1 CS */
+							gioSetBit( gioPORTA, 4, 0 );
+							break;
+						case 1: /* Flash F2 CS */
+							gioSetBit( gioPORTA, 1, 0 );
+							break;
+						case 2: /* Flash F3 CS */
+							gioSetBit( gioPORTB, 7, 0 );
+							break;
+						case 3: /* Flash F4 CS */
+							gioSetBit( gioPORTB, 4, 0 );
+							break;
+						default:
+							break;
+						}
+						spiTransmitAndReceiveData( spiREG2, &dataconfig1_t, 2, ReadStatusData, ReceiveStatusData );
+						tmp_spi = ReceiveStatusData[1];
+						/*  MysciSendByte(tmp); */
+						MyGioSetPortA( 0xff );
+						gioSetPort( gioPORTB, 0xff );
+#ifdef watchdog
+		rtiREG1->WDKEY=0xE51A;   //feed the watchdog
+		rtiREG1->WDKEY=0xA35C;	 //feed the watchdog
+#endif	
+						/* wait(fff); */
+					}
+					tmp_spi = 0x00;
+					while ( (tmp_spi&0x80) != 0x80 )
+					{
+						switch ( i )
+						{
+						case 0: /* Flash F1 CS */
+							gioSetBit( gioPORTA, 4, 0 );
+							break;
+						case 1: /* Flash F2 CS */
+							gioSetBit( gioPORTA, 1, 0 );
+							break;
+						case 2: /* Flash F3 CS */
+							gioSetBit( gioPORTB, 7, 0 );
+							break;
+						case 3: /* Flash F4 CS */
+							gioSetBit( gioPORTB, 4, 0 );
+							break;
+						default:
+							break;
+						}
+						spiTransmitAndReceiveData( spiREG2, &dataconfig1_t, 2, ReadFlagStatusData, ReceiveFlagStatusData );
+						tmp_spi = ReceiveFlagStatusData[1];
+						/*  MysciSendByte(tmp); */
+						MyGioSetPortA( 0xff );
+						gioSetPort( gioPORTB, 0xff );	
+#ifdef watchdog
+		rtiREG1->WDKEY=0xE51A;   //feed the watchdog
+		rtiREG1->WDKEY=0xA35C;	 //feed the watchdog
+#endif			
+					}
+					
+				}		
+					
+		
 			MyGioSetPortA(0xff);
 			gioSetPort(gioPORTB,0xff);
 			MyGioSetPortA(gioA_tmp0);
@@ -6969,6 +7078,23 @@ void main(void)
 				tmp_spi = spiREG2->BUF;
 				spi2sendByte((sav_addr0&0x03000000)>>24);   //Segment Choose
 				sav_stat = 13;
+				
+				tmp_spi = 0x00;
+//				while ( (tmp_spi&0x80) != 0x80 )
+//				{
+
+//					gioSetBit( gioPORTB, 4, 0 );
+//					spiTransmitAndReceiveData( spiREG2, &dataconfig1_t, 2, ReadFlagStatusData, ReceiveFlagStatusData );
+//					tmp_spi = ReceiveFlagStatusData[1];
+//					/*  MysciSendByte(tmp); */
+//					MyGioSetPortA( 0xff );
+//					gioSetPort( gioPORTB, 0xff );	
+//#ifdef watchdog
+//		rtiREG1->WDKEY=0xE51A;   //feed the watchdog
+//		rtiREG1->WDKEY=0xA35C;	 //feed the watchdog
+//#endif			
+//				}
+				
 			}
 			break;
 		case 13:
@@ -7022,7 +7148,7 @@ void main(void)
 		case 18:		// Sending time information
 			if((spiREG2->FLG & 0x00000100U) == 0x00000100U)
 			{
-#ifndef debug
+#ifdef debug
 				sciDisableNotification(scilinREG,SCI_RX_INT);		 //for debug			///////////2016.09.05
 				gioSetBit(gioPORTA,2,1);
 				MysciSendByte(0x18);  //for debug
@@ -7102,7 +7228,7 @@ void main(void)
 		case 27:		// Sending RMSxy information
 			if((spiREG2->FLG & 0x00000100U) == 0x00000100U)
 			{
-#ifndef debug
+#ifdef debug
 				sciDisableNotification(scilinREG,SCI_RX_INT);		 //for debug			///////////2016.09.05
 				gioSetBit(gioPORTA,2,1);
 				MysciSendByte(0x27);  //for debug
@@ -7286,7 +7412,7 @@ void main(void)
 		case 49:		//finish character data storage
 			if((spiREG2->FLG & 0x00000100U) == 0x00000100U)
 			{
-#ifndef debug
+#ifdef debug
 				sciDisableNotification(scilinREG,SCI_RX_INT);		 //for debug			///////////2016.09.05
 				gioSetBit(gioPORTA,2,1);
 				MysciSendByte(0x49);  //for debug
@@ -7304,7 +7430,7 @@ void main(void)
 		case 50:	          //  Inquire	Flag Status Register
 			if((tmp_spi&0x80)==0x00)
 			{
-#ifndef debug
+#ifdef debug
 				sciDisableNotification(scilinREG,SCI_RX_INT);		 //for debug			///////////2016.09.05
 				gioSetBit(gioPORTA,2,1);
 				MysciSendByte(0x50);  //for debug
@@ -7379,7 +7505,7 @@ void main(void)
 				sav_stat = 0;
 			break;
 		case 52:
-#ifndef debug
+#ifdef debug
 				sciDisableNotification(scilinREG,SCI_RX_INT);		 //for debug			///////////2016.09.05
 				gioSetBit(gioPORTA,2,1);
 				MysciSendByte(0x52);  //for debug
@@ -7395,7 +7521,7 @@ void main(void)
 		case 53:	//WRITE Segment Choose Register
 			if((spiREG2->FLG & 0x00000100U) == 0x00000100U)	// write enabled
 			{
-#ifndef debug
+#ifdef debug
 				sciDisableNotification(scilinREG,SCI_RX_INT);		 //for debug			///////////2016.09.05
 				gioSetBit(gioPORTA,2,1);
 				MysciSendByte(0x53);  //for debug
@@ -7873,7 +7999,7 @@ void main(void)
 		}
 		/************************* Flash Memory Saving loop end ***************************/
 		/**************************** FMCL Saving loop end ********************************/
-		switch(sav_fm_stat)		//写铁电
+		switch(sav_fm_stat)
 		{
 		case 0:
 			if(bSaveFM)
@@ -18274,7 +18400,7 @@ unsigned char ReadByte(uint32 addr)
 //  data=ReceiveByteData[4];
 	MyGioSetPortA(0xff);
 	gioSetPort(gioPORTB,0xff);
-//        #ifndef debug
+//        #ifdef debug
 //    		gioSetBit(gioPORTA,2,1);
 //        sciDisableNotification(scilinREG,SCI_RX_INT);
 //        MysciSendByte(ReceiveByteData[1]);
@@ -19132,6 +19258,7 @@ void recovery(void)
 	z4=spiReadAddr();				    
 	gioSetBit(gioPORTA,0,1);
 	wait(0x1000000);  //time for the initialization of i2c
+	/*
 	i2cInit();
 	i2cSetOwnAdd(i2cREG1,0x20);
 	i2cSetStart(i2cREG1);
@@ -19180,6 +19307,7 @@ void recovery(void)
 	i2cSendByte(i2cREG1,0x02);
 	i2cSendByte(i2cREG1,(second&0x7f));
 	while(i2cIsBusBusy(i2cREG1)) {};
+	*/
 }
 int abs(int x)
 {
@@ -19265,6 +19393,10 @@ void adcNotification( adcBASE_t *adc, uint32 group )
 			bottom_sec_r		= accrfloatsend;
 		}
 	}
+	if ( ia2k == 64 )
+	{
+		  bAdc = 0;
+  }
 	if ( ia2k == 10240 )
 	{
 		avg_sec_cur_x	= avg_sec_x_float / 10240; /* normalization */
@@ -19283,7 +19415,7 @@ void adcNotification( adcBASE_t *adc, uint32 group )
 		bottom_sec_r_float	= 10000;
 		ia2k	= 0;
 		delay++;
-		if(delay>1)
+		if(delay>1)     // adc delay when power-up
 		{
 			bAdc	= 1;
 		}
@@ -19388,18 +19520,21 @@ void WriteFM4Bytes(uint32 x,uint32 firstaddr)
 	FMWREN ();
 	WriteFMByte(firstaddr, data);
 }
-void bulk_erase_character()		//特征参数区域大规模擦除
+void bulk_erase_character()
 {
 	uint16	WREN[1]			= { 0x06 };
 	uint16	sector_erase[4];
-	uint16  SegmentSelect[2]= {0xc4, 0x03};
+	uint16  SegmentSelect[2]= {0xc5, 0x03};
 	uint16	ReadStatusData[2]	= { 0x05, 0x00 };
+  uint16  ReadFlagStatusData[2] = {0x70, 0x00};
 	uint16	ReceiveStatusData[2]	= { 0 };
-	uint8   tmp;
+	uint16	ReceiveFlagStatusData[2]	= { 0 };
+	uint8   tmp1, tmp2;
 	uint32  RecoverAddress= 0xf6dce00;
 	sector_erase[0]=0xd8;
 	while(RecoverAddress<0x10000000)
 	{
+
 		sector_erase[1]=((RecoverAddress&0xff0000)>>16);
 		sector_erase[2]=((RecoverAddress&0x00ff00)>>8);
 		sector_erase[3]=((RecoverAddress&0x0000ff)>>16);
@@ -19417,31 +19552,66 @@ void bulk_erase_character()		//特征参数区域大规模擦除
 		spiTransmitData( spiREG2, &dataconfig1_t, 4, sector_erase );
 		gioSetPort( gioPORTB, 0xff );
 		RecoverAddress+=64*1024;	            //1 sector= 64kB
-		tmp=0xff;
-		while ( tmp & 0x01 )
+		tmp1=0xff;
+		while ( (tmp1 & 0x01) == 0x01 )
 		{
 			gioSetBit( gioPORTB, 4, 0 );
 			spiTransmitAndReceiveData( spiREG2, &dataconfig1_t, 2, ReadStatusData, ReceiveStatusData );
-			tmp = ReceiveStatusData[1];
+			tmp1 = ReceiveStatusData[1];
 			/*  MysciSendByte(tmp); */
 			MyGioSetPortA( 0xff );
 			gioSetPort( gioPORTB, 0xff );
+#ifdef watchdog
+		rtiREG1->WDKEY=0xE51A;   //feed the watchdog
+		rtiREG1->WDKEY=0xA35C;	 //feed the watchdog
+#endif	
 			/* wait(fff); */
 		}
+		tmp2 = 0x00;
+		while ( (tmp2&0x80) != 0x80 )
+		{
+			gioSetBit( gioPORTB, 4, 0 );
+			spiTransmitAndReceiveData( spiREG2, &dataconfig1_t, 2, ReadFlagStatusData, ReceiveFlagStatusData );
+			tmp2 = ReceiveFlagStatusData[1];
+			/*  MysciSendByte(tmp); */
+			MyGioSetPortA( 0xff );
+			gioSetPort( gioPORTB, 0xff );	
+#ifdef watchdog
+		rtiREG1->WDKEY=0xE51A;   //feed the watchdog
+		rtiREG1->WDKEY=0xA35C;	 //feed the watchdog
+#endif			
+		}
+//#ifdef debug
+//	sciDisableNotification(scilinREG,SCI_RX_INT);		 //for debug			///////////2016.09.05
+//	gioSetBit(gioPORTA,2,1);
+//	MysciSendByte(tmp1);  //for debug
+//	MysciSendByte(tmp2);
+//	gioSetBit(gioPORTA,2,0);
+//	sciEnableNotification(scilinREG,SCI_RX_INT);
+//#endif
+
+//		gioSetPort( gioPORTB, 0xff );	
+			/* wait(fff); */
 	}
 	sav_addr0 = 0xf6dce00;
 	WriteFM4Bytes(0xf6dce00,0x100a);	      //FM storage
 	bSaveFM=1;
 }
-void bulk_erase_primitive()		//大规模擦除原始数据区
+
+
+
+
+void bulk_erase_primitive(void)
 {
 	uint8	  i	= 0;
 	uint16	WREN[1]			= { 0x06 };
 	uint16	bulk_erase[4]		= {0xc4,0x00,0x01,0x00};
-	uint16  SegmentSelect[2] = {0xc4,0x00};
+	uint16  SegmentSelect[2] = {0xc5,0x00};
 	uint16	ReadStatusData[2]	= { 0x05, 0x00 };
 	uint16	ReceiveStatusData[2]	= { 0 };
-	uint8   tmp;
+  uint16  ReadFlagStatusData[2] = {0x70, 0x00};
+	uint16	ReceiveFlagStatusData[2]	= { 0 };
+	uint8   tmp1,tmp2;
 	check = 0;
 	MyGioSetPortA( 0xff );
 	gioSetPort( gioPORTB, 0xff );
@@ -19528,6 +19698,77 @@ void bulk_erase_primitive()		//大规模擦除原始数据区
 		spiTransmitData( spiREG2, &dataconfig1_t, 4, bulk_erase );
 		MyGioSetPortA( 0xff );
 		gioSetPort( gioPORTB, 0xff );
+  }
+
+	for(i=0;i<4;i++)
+	{
+		tmp1=0xff;
+		while ( (tmp1 & 0x01) == 0x01 )
+		{
+			switch ( i )
+			{
+			case 0: /* Flash F1 CS */
+				gioSetBit( gioPORTA, 4, 0 );
+				break;
+			case 1: /* Flash F2 CS */
+				gioSetBit( gioPORTA, 1, 0 );
+				break;
+			case 2: /* Flash F3 CS */
+				gioSetBit( gioPORTB, 7, 0 );
+				break;
+			case 3: /* Flash F4 CS */
+				gioSetBit( gioPORTB, 4, 0 );
+				break;
+			default:
+				break;
+			}
+			spiTransmitAndReceiveData( spiREG2, &dataconfig1_t, 2, ReadStatusData, ReceiveStatusData );
+			tmp1 = ReceiveStatusData[1];
+			/*  MysciSendByte(tmp); */
+			MyGioSetPortA( 0xff );
+			gioSetPort( gioPORTB, 0xff );
+#ifdef watchdog
+		rtiREG1->WDKEY=0xE51A;   //feed the watchdog
+		rtiREG1->WDKEY=0xA35C;	 //feed the watchdog
+#endif	
+			/* wait(fff); */
+		}
+		tmp2 = 0x00;
+		while ( (tmp2&0x80) != 0x80 )
+		{
+			switch ( i )
+			{
+			case 0: /* Flash F1 CS */
+				gioSetBit( gioPORTA, 4, 0 );
+				break;
+			case 1: /* Flash F2 CS */
+				gioSetBit( gioPORTA, 1, 0 );
+				break;
+			case 2: /* Flash F3 CS */
+				gioSetBit( gioPORTB, 7, 0 );
+				break;
+			case 3: /* Flash F4 CS */
+				gioSetBit( gioPORTB, 4, 0 );
+				break;
+			default:
+				break;
+			}
+			spiTransmitAndReceiveData( spiREG2, &dataconfig1_t, 2, ReadFlagStatusData, ReceiveFlagStatusData );
+			tmp2 = ReceiveFlagStatusData[1];
+			/*  MysciSendByte(tmp); */
+			MyGioSetPortA( 0xff );
+			gioSetPort( gioPORTB, 0xff );	
+#ifdef watchdog
+		rtiREG1->WDKEY=0xE51A;   //feed the watchdog
+		rtiREG1->WDKEY=0xA35C;	 //feed the watchdog
+#endif			
+		}
+		
+  }
+
+
+	for ( i = 0; i < 4; i++ )
+	{		
 		SegmentSelect[1]=0x02;				    //change to upper segment
 		switch ( i )
 		{
@@ -19608,8 +19849,82 @@ void bulk_erase_primitive()		//大规模擦除原始数据区
 		}
 		spiTransmitData( spiREG2, &dataconfig1_t, 4, bulk_erase );
 		MyGioSetPortA( 0xff );
-		gioSetPort( gioPORTB, 0xff );
+		gioSetPort( gioPORTB, 0xff );	
+
 	}
+	for(i=0;i<4;i++)
+	{
+		tmp1=0xff;
+		while ( (tmp1 & 0x01) == 0x01 )
+		{
+			switch ( i )
+			{
+			case 0: /* Flash F1 CS */
+				gioSetBit( gioPORTA, 4, 0 );
+				break;
+			case 1: /* Flash F2 CS */
+				gioSetBit( gioPORTA, 1, 0 );
+				break;
+			case 2: /* Flash F3 CS */
+				gioSetBit( gioPORTB, 7, 0 );
+				break;
+			case 3: /* Flash F4 CS */
+				gioSetBit( gioPORTB, 4, 0 );
+				break;
+			default:
+				break;
+			}
+			spiTransmitAndReceiveData( spiREG2, &dataconfig1_t, 2, ReadStatusData, ReceiveStatusData );
+			tmp1 = ReceiveStatusData[1];
+			/*  MysciSendByte(tmp); */
+			MyGioSetPortA( 0xff );
+			gioSetPort( gioPORTB, 0xff );
+#ifdef watchdog
+		rtiREG1->WDKEY=0xE51A;   //feed the watchdog
+		rtiREG1->WDKEY=0xA35C;	 //feed the watchdog
+#endif	
+			/* wait(fff); */
+		}
+		tmp2 = 0x00;
+		while ( (tmp2&0x80) != 0x80 )
+		{
+			switch ( i )
+			{
+			case 0: /* Flash F1 CS */
+				gioSetBit( gioPORTA, 4, 0 );
+				break;
+			case 1: /* Flash F2 CS */
+				gioSetBit( gioPORTA, 1, 0 );
+				break;
+			case 2: /* Flash F3 CS */
+				gioSetBit( gioPORTB, 7, 0 );
+				break;
+			case 3: /* Flash F4 CS */
+				gioSetBit( gioPORTB, 4, 0 );
+				break;
+			default:
+				break;
+			}
+			spiTransmitAndReceiveData( spiREG2, &dataconfig1_t, 2, ReadFlagStatusData, ReceiveFlagStatusData );
+			tmp2 = ReceiveFlagStatusData[1];
+			/*  MysciSendByte(tmp); */
+			MyGioSetPortA( 0xff );
+			gioSetPort( gioPORTB, 0xff );	
+#ifdef watchdog
+		rtiREG1->WDKEY=0xE51A;   //feed the watchdog
+		rtiREG1->WDKEY=0xA35C;	 //feed the watchdog
+#endif			
+		}
+		
+  }
+	
+	
+
+
+	
+	
+	
+	
 	sav_addr1_xy0z0r0=0x00000000;
 	sav_addr1_xy0z0r1=0x1A5500;
 	sav_addr1_xy0z0r2=0x34AA00;
@@ -19760,48 +20075,11 @@ void bulk_erase_primitive()		//大规模擦除原始数据区
 	sav_addr1_xy4z4r3=0xF1ECF00;
 	sav_addr1_xy4z4r4=0xF392400;
 	sav_addr1_xy4z4r5=0xF537900;
-	sav_addr0 = 0xf6dce00;      //特征区域起始地址
-//	for(i=0; i<150; i++)
-//	{
-//		WriteFM4Bytes((0x00000000+i*0x1A5500),(0x100e+i*4));
-//	}
-//	WriteFM4Bytes(0xf6dce00,0x100a);	      //FM storage
-	for (i=0; i<4; i++ )             //check Status Register		//检验擦除完毕
-	{
-		tmp = 0xff;
-		while ( tmp & 0x01 )
-		{
-			switch ( i )
-			{
-			case 0: /* Flash F1 CS */
-				gioSetBit( gioPORTA, 4, 0 );
-				break;
-			case 1: /* Flash F2 CS */
-				gioSetBit( gioPORTA, 1, 0 );
-				break;
-			case 2: /* Flash F3 CS */
-				gioSetBit( gioPORTB, 7, 0 );
-				break;
-			case 3: /* Flash F4 CS */
-				gioSetBit( gioPORTB, 4, 0 );
-				break;
-			default:
-				break;
-			}
-			spiTransmitAndReceiveData( spiREG2, &dataconfig1_t, 2, ReadStatusData, ReceiveStatusData );
-			tmp = ReceiveStatusData[1];
-			/*  MysciSendByte(tmp); */
-			MyGioSetPortA( 0xff );
-			gioSetPort( gioPORTB, 0xff );
-			/* wait(fff); */
-#ifdef watchdog
-		rtiREG1->WDKEY=0xE51A;   //feed the watchdog
-		rtiREG1->WDKEY=0xA35C;	 //feed the watchdog
-#endif		
-		}
-	}
-	bSaveFM=1;	
+	sav_addr0 = 0xf6dce00;
+
+	bSaveFM=1;		
 }
+
 void spi2sendByte(uint8 x)
 {
 	//tmp_spi = spiREG2->BUF;
@@ -19924,9 +20202,11 @@ void CacuClockTime(uint32 TimeSec)
 	realyear=1970;
 	realmonth=1;
 	realday=1;
-	realhour=8;
+	realhour=0;
 	realminute=0;
 	realsecond=0;
+	
+	TimeSec = TimeSec +8*60*60;
 	while(TimeSec >=YearDelay)
 	{
 		realyear++;
@@ -19976,12 +20256,113 @@ void CacuClockTime(uint32 TimeSec)
 	realsecond=TimeSec;
 	second=second/10*16+second%10;         // binary to decimal
 	minute=minute/10*16+minute%10;
-	hour=hour+8;
+	hour=hour;
 	hour=hour/10*16+hour%10;
 	day=day/10*16+day%10;
 	month=month/10*16+month%10;
 	year=year/10*16+year%10;
 }
+
+/*
+void CacuClockTime(uint32 TimeSec)
+{
+	int YearDelay = 0;
+	int MonthDelay = 0;
+	int DayDelay = 24 * 60* 60;
+	int HourDelay = 60* 60;
+	int MiniteDelay = 60;
+
+	year=0;
+	month=1;
+	day=1;
+	hour = 0;
+	minute = 0;
+	second = 0;
+	realyear=1970;
+	realmonth = 1;
+	realday = 1;
+	realhour = 0;
+	realminute = 0;
+	realsecond = 0;
+	while(1)
+	{
+		if ((realyear % 4 == 0 && realyear % 100 != 0 )||realyear % 400 == 0)  //leap year
+				YearDelay = 366*24*60*60;
+		else
+				YearDelay = 365*24*60*60;
+		if (TimeSec >= YearDelay)                        
+		{
+				realyear++;
+				TimeSec -= YearDelay;
+		}
+		else
+		{
+			if (realmonth == 1 || realmonth == 3 || realmonth == 5 || realmonth == 7 || realmonth == 8 || realmonth == 10 || realmonth == 12)	       
+					MonthDelay = 31*24*60*60;	       
+			else if (realmonth == 2)
+			{
+					if ((realyear % 4 == 0 && realyear % 100 != 0 )||(realyear % 400 == 0) ) //leap year	           
+							MonthDelay = 29*24*60*60;	           
+					else	         
+							MonthDelay = 28*24*60*60;	          
+			}
+			else	       
+					MonthDelay = 30*24*60*60;    
+			if(TimeSec>=MonthDelay)
+			{
+					realmonth++;
+					TimeSec -= MonthDelay;
+			}	
+			else
+			{
+					if(TimeSec>=DayDelay)
+					{
+							realday++;
+							TimeSec-=DayDelay;
+					}
+					else
+					{
+							if(TimeSec>=HourDelay)
+							{
+									realhour++;
+									TimeSec-=HourDelay;
+							}
+							else
+							{
+									if(TimeSec >= MiniteDelay)
+									{
+											realminute++;
+											TimeSec -= MiniteDelay;
+									}
+									else
+									{
+											realsecond = TimeSec;
+											break;
+									}
+							}
+						}
+
+				}
+			}
+		}		
+
+	second = TimeSec;
+	//realsecond=TimeSec;
+	second=second/10*16+second%10;         // binary to decimal
+	minute = realminute;
+	minute = minute/10*16+minute%10;
+	hour = realhour;                               //2019.6.16去锟斤拷+8小时
+	hour=hour/10*16+hour%10;
+	
+	day = realday;
+	
+	day=day/10*16+day%10;
+	month = realmonth;
+	month = month/10*16+month%10;
+	year = realyear - 1970;
+	year=year/10*16+year%10;
+}
+*/
 uint32 spiReadAddr(void)
 {
 	uint32 x;
