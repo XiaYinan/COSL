@@ -73,6 +73,7 @@ uint16 accx_2k_buf1[10000], accy_2k_buf1[10000],	accz_2k_buf1[10000], accr_2k_bu
 float rms_buf_100ms_x[100] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 float rms_buf_100ms_y[100] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 float rms_buf_100ms_z[100] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
 int shock_xy_num_thresh[4] = {0, 0, 0, 0};
 int shock_z_num_thresh[4] = {0, 0, 0, 0};
 bool adcflag=0;
@@ -134,8 +135,8 @@ unsigned char bi2cstat = 0;
 unsigned int sav_fm_stat = 0;
 unsigned char bSaveFM = 0;
 uint16 shock_g_thresh=50;
-uint16 rms_xy_thresh[15]={0.5,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
-uint16 rms_z_thresh[15]={0.5,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
+float rms_xy_thresh[15]={0.5,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
+float rms_z_thresh[15]={0.5,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
 uint16 minusR=0;
 uint8 xylevel=0,zlevel=0,rlevel=0,level=0;
 uint8 shock_level_xy,shock_level_z=0;
@@ -210,7 +211,6 @@ void WriteByte(uint32 addr, int data);
 void newWriteByte(uint32 addr, int data);
 void SPI_init(void);
 void WREN (int x);        /* flash write enable */
-void ReadStatus(int i);   /* flash status read */
 int ReadFlashID(int i);
 void StartAdd(uint16 addr);
 void spi1transmitByte(uint8 data);
@@ -592,8 +592,6 @@ void main(void)
 					brxstat = 5;
 				else if(rxdata == 0x03)		// mode OPERATION
 					brxstat = 9;
-				else if(rxdata == 0x60)		// mode CALIBRATION
-					brxstat = 13;
 				else if(rxdata == 0x07)		// read Tool ID
 					brxstat = 24;
 				else if(rxdata == 0x06)		// write Tool ID
@@ -643,116 +641,42 @@ void main(void)
 			}
 			break;
 		case 1:                // read UART status
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x51)
-				{
-					brxstat = 2;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 0;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 2:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x00)
-				{
-					brxstat = 3;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 0;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 3:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x00)
-				{
-					brxstat = 4;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 0;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 4:
+			
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x51){brxstat = 0;}
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x00){brxstat = 0;}
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x00){brxstat = 0;}
+			
 			data[0]=0x0003;
 			data[1]=(bComHighSpeed<<8)|sendmode;
 			data[2]=BootCount;
 			data[3]=data[0]^data[1]^data[2]^0xffff;
 			MysciSend(data);
 			brxstat = 0;
-			break;
+			break;			
+
 		case 5:             // mode STANDBY
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x51)
-				{
-					brxstat = 6;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 0;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 6:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x00)
-				{
-					brxstat = 7;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 0;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 7:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x00)
-				{
-					brxstat = 8;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 0;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 8:
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x51){brxstat = 0;}
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x00){brxstat = 0;}
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x00){brxstat = 0;}
+			
 			mode=0x00;
 			bSave=0;
 			bSend=0;
@@ -766,63 +690,25 @@ void main(void)
 			brxstat = 0;
 			break;
 		case 9:         // mode OPERATION
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x51)
-				{
-					brxstat = 10;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 0;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 10:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x00)
-				{
-					brxstat = 11;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 0;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 11:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x00)
-				{
-					brxstat = 12;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 0;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 12:
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x51){brxstat = 0;}
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x00){brxstat = 0;}
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x00){brxstat = 0;}
+			
 			mode=0x01;
 			bSave=1;
 			bSend=0;
 			FMWREN ();
 			WriteFMByte(0x0000, bSave);
-		    bSaveFM=1;
+		  bSaveFM=1;
 			sendmode=0;
 //			bSave=0;
 			data[0]=0x0003;
@@ -832,236 +718,21 @@ void main(void)
 			MysciSend(data);
 			brxstat = 0;
 			break;
-		case 13:                // mode CALIBRATION
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x51)
-				{
-					brxstat = 14;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 0;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 14:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x00)
-				{
-					brxstat = 15;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 0;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 15:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x02)
-				{
-					brxstat = 16;
-					ovtimeX= 0;
-					check=0x0002^0xffff;
-				}
-				else
-					brxstat = 0;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 16:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				mode=0x10;
-				rxdata1 = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata1 == 0x00)           // sendmode=0;
-				{
-					brxstat = 18;
-				}
-				else if(rxdata1 == 0x01)      // sendmode=1;
-				{
-					brxstat = 18;
-				}
-				else if(rxdata1 == 0x02)      // sendmode=2;
-				{
-					brxstat = 18;
-				}
-				else if(rxdata1 == 0x03)      // sendmode=3;
-				{
-					brxstat = 18;
-				}
-				else if(rxdata1 == 0x04)      // sendmode=4;
-				{
-					brxstat = 18;
-				}
-				else
-					brxstat = 16;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 18:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				mode=0x10;
-				rxdata2 = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata1==rxdata2)
-				{
-					if(rxdata2 == 0x00)           // sendmode=0;
-					{
-						brxstat = 19;
-						sendmode=0;
-						check^=0x0000;
-					}
-					else if(rxdata2 == 0x01)      // sendmode=1;
-					{
-						brxstat = 19;
-						sendmode=1;
-						check^=0x0101;
-					}
-					else if(rxdata2 == 0x02)      // sendmode=2;
-					{
-						brxstat = 19;
-						sendmode= 2;
-						check^=0x0202;
-					}
-					else if(rxdata2 == 0x03)      // sendmode=3;
-					{
-						brxstat = 19;
-						sendmode= 3;
-						check^=0x0303;
-					}
-					else if(rxdata2 == 0x04)      // sendmode=4;
-					{
-						brxstat = 19;
-						sendmode= 4;
-						check^=0x0404;
-					}
-					else
-						brxstat = 18;
-				}
-				else
-					brxstat = 18;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 19:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata1 = rcvdata[i_rcv];
-				i_rcv--;
-				brxstat = 20;
-				ovtimeX= 0;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			else
-				brxstat = 20;
-			break;
-		case 20:    // to check the sum
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata2 = rcvdata[i_rcv];
-				i_rcv--;
-				CHKS=(rxdata1<<8)^rxdata2;
-				if(check==CHKS)
-				{
-					brxstat = 21;
-					ovtimeX= 0;
-				}
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			else
-				brxstat = 0;
-			break;
-		case 21:
-			bSave=0;
-			bSend=1;
-			bComHighSpeed=1;
-			FMWREN();
-			WriteFMByte(0x0000, bSave);
-			data[0]=0x0003;
-			data[1]=(bComHighSpeed<<8)|sendmode;
-			data[2]=0xff00|mode;
-			data[3]=data[0]^data[1]^data[2]^0xffff;
-			MysciSend(data);
-			brxstat = 0;
-			break;
+
 		case 24:           // read Tool ID
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x51)
-				{
-					brxstat = 25;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 0;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 25:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x00)
-				{
-					brxstat = 26;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 0;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 26:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x00)
-				{
-					brxstat = 27;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 0;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 27:
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x51){brxstat = 0;}
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x00){brxstat = 0;}
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x00){brxstat = 0;}
+			
 			data[0]=0x0005;
 			data[1]=(ReadFMByte(0x0010)<<8)|ReadFMByte(0x0011);
 			data[2]=(ReadFMByte(0x0012)<<8)|ReadFMByte(0x0013);
@@ -1314,57 +985,19 @@ void main(void)
 			brxstat = 0;
 			break;
 		case 42:         // read Firmware Version
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x51)
-				{
-					brxstat = 43;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 0;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 43:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x00)
-				{
-					brxstat = 44;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 0;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 44:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x00)
-				{
-					brxstat = 45;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 44;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 45:
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x51){brxstat = 0;}
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x00){brxstat = 0;}
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x00){brxstat = 0;}
+			
 			data[0]=0x0006;     // const char FW_Version[]="VST_1.2.30";
 			/*
 		  data[1]=0x5653;
@@ -1978,57 +1611,19 @@ void main(void)
 			brxstat = 0;
 			break;
 		case 76:         // read the value of peak-to-peak
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x51)
-				{
-					brxstat = 77;
-					ovtimeX = 0;
-				}
-				else
-					brxstat = 0;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 77:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x00)
-				{
-					brxstat = 78;
-					ovtimeX = 0;
-				}
-				else
-					brxstat = 77;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 78:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x00)
-				{
-					brxstat = 79;
-					ovtimeX = 0;
-				}
-				else
-					brxstat = 78;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 79:
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x51){brxstat = 0;}
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x00){brxstat = 0;}
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x00){brxstat = 0;}
+
 			data[0]=0x0007;
 			check=data[0]^0xffff;
 			txdata1=(peak_sec_cur_x>>24)&0xff;
@@ -2060,57 +1655,19 @@ void main(void)
 			brxstat = 0;
 			break;
 		case 80:         // read temperature
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x51)
-				{
-					brxstat = 81;
-					ovtimeX = 0;
-				}
-				else
-					brxstat = 80;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 81:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x00)
-				{
-					brxstat = 82;
-					ovtimeX = 0;
-				}
-				else
-					brxstat = 81;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 82:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x00)
-				{
-					brxstat = 83;
-					ovtimeX = 0;
-				}
-				else
-					brxstat = 82;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 83:
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x51){brxstat = 0;}
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x00){brxstat = 0;}
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x00){brxstat = 0;}
+			
 			data[0]=0x0003;
 			check=0x0003^0xffff;
 
@@ -2133,57 +1690,19 @@ void main(void)
 			brxstat = 0;
 			break;
 		case 84:         // read r
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x51)
-				{
-					brxstat = 85;
-					ovtimeX = 0;
-				}
-				else
-					brxstat = 0;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 85:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x00)
-				{
-					brxstat = 86;
-					ovtimeX = 0;
-				}
-				else
-					brxstat = 85;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 86:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x00)
-				{
-					brxstat = 87;
-					ovtimeX = 0;
-				}
-				else
-					brxstat = 86;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 87:
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x51){brxstat = 0;}
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x00){brxstat = 0;}
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x00){brxstat = 0;}
+			
 			data[0]=0x0003;
 			check=0x0003^0xffff;
 
@@ -2367,12 +1886,12 @@ void main(void)
 		case 97:
 			data[0]=0x0001;
 			data[1]=bulk_select;
-			MysciSend(data);			  //��ʼ����
+			MysciSend(data);			  
 			if(bulk_select==0x01)
 				bulk_erase_character();
 			else
 				bulk_erase_primitive();
-			MysciSend(data);		     //��������
+			MysciSend(data);		     
 			brxstat = 0;
 			break;
 		case 98:         // read N LB
@@ -2631,57 +2150,19 @@ void main(void)
 			brxstat = 0;
 			break;
 		case 114:                // read importat data
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x51)
-				{
-					brxstat = 115;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 114;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 115:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x00)
-				{
-					brxstat = 116;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 115;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 116:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x00)
-				{
-					brxstat = 117;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 116;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 117:
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x51){brxstat = 0;}
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x00){brxstat = 0;}
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x00){brxstat = 0;}
+
 			data[0]=0x0008;
 			check=0x0008^0xffff;
 			data[1]=xylevel;
@@ -3612,57 +3093,19 @@ void main(void)
 			brxstat = 0;			
 			break;
 		case 180:                // read parameters
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x51)
-				{
-					brxstat = 181;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 0;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 181:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x00)
-				{
-					brxstat = 182;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 181;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 182:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x00)
-				{
-					brxstat = 184;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 182;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 184:
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x51){brxstat = 0;}
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x00){brxstat = 0;}
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x00){brxstat = 0;}
+			
 			data[0]=0x0015;
 			data[1]=((ar&0xffff0000)>>16);			
 			data[2]=(ar&0x0000ffff);    //read ar
@@ -3690,57 +3133,19 @@ void main(void)
 			brxstat = 0;
 			break;
 		case 190:                         // read real time data
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x51)
-				{
-					brxstat = 191;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 0;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 191:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x00)
-				{
-					brxstat = 192;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 191;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 192:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x00)
-				{
-					brxstat = 194;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 192;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 194:
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x51){brxstat = 0;}
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x00){brxstat = 0;}
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x00){brxstat = 0;}
+			
 			data[0]=0x0004;
 			data[1]=accx_send;
 			data[2]=accy_send;
@@ -3752,57 +3157,19 @@ void main(void)
 		
 
 		case 195:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x51)
-				{
-					brxstat = 196;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 0;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 196:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x00)
-				{
-					brxstat = 197;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 196;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 197:
-			ovtimeX++;
-			if(i_rcv != 0)
-			{
-				rxdata = rcvdata[i_rcv];
-				i_rcv--;
-				if(rxdata == 0x00)
-				{
-					brxstat = 198;
-					ovtimeX= 0;
-				}
-				else
-					brxstat = 197;
-			}
-			else if(ovtimeX>999)	// overtime error, return back to status 0
-				brxstat = 0;
-			break;
-		case 198:
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x51){brxstat = 0;}
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x00){brxstat = 0;}
+			while(i_rcv == 0){}
+			rxdata = rcvdata[i_rcv];
+			i_rcv--;
+			if(rxdata != 0x00){brxstat = 0;}
+			
 			data[0]=0x0003;
 			if (bComHighSpeed == 1)
 				data[1] = 0xE100;
@@ -4215,146 +3582,7 @@ void main(void)
 			break;		
 		}
 		/***************************** UART Receive loop end   ****************************/
-		/***************************** UART transmit loop start ***************************/
-		switch(btxstat)	
-		{
-		case 0:
-			if(bstart_tx)
-			{
-				if(bSend && bComHighSpeed)		// when in the status of bSend and COM is high speed mode, then go to data sending
-				{
-					gioSetBit(gioPORTA,2,1);
-//          sciSetBaudrate(scilinREG,115200U);
-					btxstat = 4;
-					sciDisableNotification(scilinREG,SCI_RX_INT);			//disable rx full interrput
-//          MysciSendByte(0x67);
-				}
-				bstart_tx = 0;
-			}
-			break;
-		case 4:
-//			if((scilinREG->FLR & (uint32)SCI_TX_INT) != 0U)	// transmition empty detected
-//			{
-			switch(sendmode)
-			{
-			case 0:
-//						scilinREG->TD = 0xda;				// send out 2kHz accx, accy, accz, ID
-				temp_send = rtemperature;	// refresh temperature value
-				btxstat = 11;
-				break;
-			case 1:
-//						scilinREG->TD = 0xd0;
-				btxstat = 5;
-				break;
-			case 2:
-//						scilinREG->TD = 0xd1;
-				btxstat = 7;
-				break;
-			case 3:
-//						scilinREG->TD = 0xd2;
-				btxstat = 9;
-				break;
-			case 4:
-//						scilinREG->TD = 0xd3;
-				btxstat = 20;
-				break;
-			default:
-				break;
-			}
-//			}
-			break;
-		case 5:
-			if((scilinREG->FLR & (uint32)SCI_TX_INT) != 0U)	// transmition empty detected
-			{
-				tmp = ((accx_send>>8) & 0xff);			// send out accx low byte
-				scilinREG->TD = tmp;
-				btxstat = 6;
-			}
-			break;
-		case 6:
-			if((scilinREG->FLR & (uint32)SCI_TX_INT) != 0U)	// transmition empty detected
-			{
-				tmp = (accx_send & 0xff);			// send out accx high byte
-				scilinREG->TD = tmp;
-				btxstat = 14;
-			}
-			break;
-		case 7:
-			if((scilinREG->FLR & (uint32)SCI_TX_INT) != 0U)	// transmition empty detected
-			{
-				tmp = ((accy_send>>8) & 0xff) ;			// send out accy low byte
-				scilinREG->TD = tmp;
-				btxstat = 8;
-			}
-			break;
-		case 8:
-			if((scilinREG->FLR & (uint32)SCI_TX_INT) != 0U)	// transmition empty detected
-			{
-				tmp = (accy_send & 0xff);			// send out accy high byte
-				scilinREG->TD = tmp;
-				btxstat = 14;
-			}
-			break;
-		case 9:
-			if((scilinREG->FLR & (uint32)SCI_TX_INT) != 0U)	// transmition empty detected
-			{
-				tmp = ((accz_send>>8) & 0xff);			// send out accz low byte
-				scilinREG->TD = tmp;
-				btxstat = 10;
-			}
-			break;
-		case 10:
-			if((scilinREG->FLR & (uint32)SCI_TX_INT) != 0U)	// transmition empty detected
-			{
-				tmp = (accz_send & 0xff);			// send out accy high byte
-				scilinREG->TD = tmp;
-				btxstat = 14;
-			}
-			break;
-		case 11:
-			if((scilinREG->FLR & (uint32)SCI_TX_INT) != 0U)	// transmition empty detected
-			{
-				tmp = ((temp_send>>8) & 0xff);			// send out temperature low byte
-				scilinREG->TD = tmp;
-				btxstat = 12;
-			}
-			break;
-		case 12:
-			if((scilinREG->FLR & (uint32)SCI_TX_INT) != 0U)	// transmition empty detected
-			{
-				tmp = (temp_send & 0xff);			// send out temperature high byte
-				scilinREG->TD = tmp;
-				btxstat = 14;
-			}
-			break;
-		case 20:
-			if((scilinREG->FLR & (uint32)SCI_TX_INT) != 0U)	// transmition empty detected
-			{
-				tmp = ((accr_send& 0xff00)>>8 );			// send out accr low byte
-				scilinREG->TD =(uint8)tmp;
-				btxstat = 21;
-			}
-			break;
-		case 21:
-			if((scilinREG->FLR & (uint32)SCI_TX_INT) != 0U)	// transmition empty detected
-			{
-				tmp = (accr_send & 0x00ff);			// send out accr low byte
-				scilinREG->TD = (uint8)tmp;
-				btxstat = 14;
-			}
-			break;
-		case 14:
-			if((scilinREG->FLR & (uint32)SCI_TX_INT) != 0U)	// transmition empty detected, enable receive
-			{
-//				sciEnableNotification(scilinREG, SCI_RX_INT);			// enable rx full interrupt
-				btxstat = 4;
-			}
-			break;
-		default:
-			btxstat = 0;
-			break;
-		}
-		/***************************** UART transmit loop end *****************************/
+
 		/************************* Flash Memory Saving loop start *************************/
 		switch(sav_stat)
 		{
@@ -5650,39 +4878,7 @@ int ReadFlashID(int i)
 	sciEnableNotification(scilinREG,SCI_RX_INT);
 	return ID;
 }
-void ReadStatus(int i)
-{
-	uint16 ReadStatusData[2] = { 0x05, 0x00};
-	uint16 ReceiveStatusData[2] = { 0 };
-	MyGioSetPortA(0xff);
-	gioSetPort(gioPORTB,0xff);
-	switch(i)
-	{
-	case 0: // Flash F1 CS
-		gioSetBit(gioPORTA,4,0);
-		break;
-	case 1: // Flash F2 CS
-		gioSetBit(gioPORTA,1,0);
-		break;
-	case 2: // Flash F3 CS
-		gioSetBit(gioPORTB,7,0);
-		break;
-	case 3: // Flash F4 CS
-		gioSetBit(gioPORTB,4,0);
-		break;
-	default:
-		break;
-	}
-	spiTransmitAndReceiveData(spiREG2, &dataconfig1_t, 2, ReadStatusData, ReceiveStatusData);
-	MyGioSetPortA(0xff);
-	gioSetPort(gioPORTB,0xff);
-//    		gioSetBit(gioPORTA,2,1);
-//        sciDisableNotification(scilinREG,SCI_RX_INT);
-//        MysciSendByte(ReceiveStatusData[0]);
-//        MysciSendByte(ReceiveStatusData[1]);
-//	      gioSetBit(gioPORTA,2,0);
-//	      sciEnableNotification(scilinREG,SCI_RX_INT);
-}
+
 void SPI_init(void)
 {
 	int id = 0;
@@ -5984,56 +5180,6 @@ void recovery(void)
 	BootCount += 1;
 	
 	wait(0x1000000);  //time for the initialization of i2c
-	/*
-	i2cInit();
-	i2cSetOwnAdd(i2cREG1,0x20);
-	i2cSetStart(i2cREG1);
-	i2cSetSlaveAdd(i2cREG1,0x51);
-	i2cSendByte(i2cREG1,0xA2);
-	i2cSendByte(i2cREG1,0x08);
-	i2cSendByte(i2cREG1,year);
-	while(i2cIsBusBusy(i2cREG1)) {};
-	i2cInit();
-	i2cSetOwnAdd(i2cREG1,0x20);
-	i2cSetStart(i2cREG1);
-	i2cSetSlaveAdd(i2cREG1,0x51);
-	i2cSendByte(i2cREG1,0xA2);
-	i2cSendByte(i2cREG1,0x07);
-	i2cSendByte(i2cREG1,(month&0x1f));
-	while(i2cIsBusBusy(i2cREG1)) {};
-	i2cInit();
-	i2cSetOwnAdd(i2cREG1,0x20);
-	i2cSetStart(i2cREG1);
-	i2cSetSlaveAdd(i2cREG1,0x51);
-	i2cSendByte(i2cREG1,0xA2);
-	i2cSendByte(i2cREG1,0x05);
-	i2cSendByte(i2cREG1,(day&0x3f));
-	while(i2cIsBusBusy(i2cREG1)) {};
-	i2cInit();
-	i2cSetOwnAdd(i2cREG1,0x20);
-	i2cSetStart(i2cREG1);
-	i2cSetSlaveAdd(i2cREG1,0x51);
-	i2cSendByte(i2cREG1,0xA2);
-	i2cSendByte(i2cREG1,0x04);
-	i2cSendByte(i2cREG1,(hour&0x3f));
-	while(i2cIsBusBusy(i2cREG1)) {};
-	i2cInit();
-	i2cSetOwnAdd(i2cREG1,0x20);
-	i2cSetStart(i2cREG1);
-	i2cSetSlaveAdd(i2cREG1,0x51);
-	i2cSendByte(i2cREG1,0xA2);
-	i2cSendByte(i2cREG1,0x03);
-	i2cSendByte(i2cREG1,(minute&0x7f));
-	while(i2cIsBusBusy(i2cREG1)) {};
-	i2cInit();
-	i2cSetOwnAdd(i2cREG1,0x20);
-	i2cSetStart(i2cREG1);
-	i2cSetSlaveAdd(i2cREG1,0x51);
-	i2cSendByte(i2cREG1,0xA2);
-	i2cSendByte(i2cREG1,0x02);
-	i2cSendByte(i2cREG1,(second&0x7f));
-	while(i2cIsBusBusy(i2cREG1)) {};
-	*/
 }
 int abs(int x)
 {
@@ -6053,10 +5199,6 @@ adcData_t adc_data1[3];
 adcData_t adc_data2[3];
 void adcNotification( adcBASE_t *adc, uint32 group )
 {
-
-
-
-
 	unsigned static int delay=0;
 	adcGetData( adcREG1, adcGROUP1, &adc_data1[0] );
 	adcGetData( adcREG2, adcGROUP1, &adc_data2[0] );
