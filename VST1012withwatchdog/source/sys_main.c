@@ -19403,6 +19403,7 @@ void adcNotification( adcBASE_t *adc, uint32 group )
 		avg_sec_cur_y	= avg_sec_y_float / 10240;
 		avg_sec_cur_z	= avg_sec_z_float / 10240;
 		avg_sec_cur_r	= avg_sec_r_float / 10240;
+		avg_sec_cur_r_float = avg_sec_r_float /10240;
 		peak_sec_cur_r_float	= peak_sec_r_float;
 		bottom_sec_cur_r_float	= bottom_sec_r_float;
 		peak_sec_cur_r		= (int)peak_sec_r_float;
