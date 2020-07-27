@@ -118,10 +118,12 @@ int ia2k_sav_cnt = 0;
 unsigned char bsav_level = 0,bsav_data = 0;			/* flag for saving 2k data */
 int accx_sum = 0, accy_sum = 0, accz_sum = 0, accr_sum = 0;	/* used for acculumating accx, accy and accz data for 2kHz sampling */
 long long rms_sum_sec_x = 0, rms_sum_sec_y = 0, rms_sum_sec_z = 0;		/* calculate the rms value of 10 seconds for three axises */
+long long max_rms_sum_sec_x = 0, max_rms_sum_sec_y = 0, max_rms_sum_sec_z = 0;
 float rms_sum_sec_x_float=0, rms_sum_sec_y_float=0, rms_sum_sec_z_float=0;
 long long rms_sec_cur_x = 0, rms_sec_cur_y = 0, rms_sec_cur_z = 0;		/* storing the rms value of 10 seconds for three axises */
 float rms_sec_cur_z_float=0;
 int peak_sec_x = 0, peak_sec_y = 0, peak_sec_z = 0,peak_sec_r = 0;					/* calculate the peak value of 10 seconds for three axises */
+int max_peak_sec_x = 0, max_peak_sec_y = 0, max_peak_sec_z = 0, max_peak_sec_r = 0;	
 float peak_sec_x_float=0, peak_sec_y_float=0, peak_sec_z_float=0,peak_sec_r_float=0;
 int peak_sec_cur_x = 0, peak_sec_cur_y = 0, peak_sec_cur_z = 0,peak_sec_cur_r = 0;		/* storing the peak value of 10 seconds for three axises */
 float peak_sec_cur_r_float = 0;
@@ -132,6 +134,7 @@ float avg_sec_x_float=0, avg_sec_y_float=0, avg_sec_z_float=0,avg_sec_r_float=0;
 uint16 avg_sec_cur_x = 0, avg_sec_cur_y = 0, avg_sec_cur_z = 0,avg_sec_cur_r = 0;		/* storing the average value of 10 seconds for three axises */
 float avg_sec_cur_r_float=0;
 long long rms_sum_bulk = 0;
+long long max_rms_sum_bulk = 0;
 float rms_sum_bulk_float=0;
 long long rms_cur_bulk=0;
 float rms_cur_bulk_float=0;
@@ -163,6 +166,7 @@ uint32 z1,z2,z3,z4,z5=0;                  //threshold value to calibrate the vib
 float z1float,z2float,z3float,z4float,z5float=0;  //threshold value to calibrate the vibration of axis z (float)
 float  arfloat,brfloat,crfloat,drfloat=0;
 int i=0;
+int rms_index=0;
 int tmp;
 int ovtime = 0;
 int ovtimeX = 0;
@@ -5241,39 +5245,56 @@ void main(void)
 				MysciSendByte(0x02);  //for debug
 				gioSetBit(gioPORTA,2,0);
 				sciEnableNotification(scilinREG,SCI_RX_INT);
-#endif	
-			for(ia2k_sav_cnt=0; ia2k_sav_cnt<10240; ia2k_sav_cnt++)
-			{
-				if (adcflag==0)
+#endif		
+			for(rms_index=0; rms_index<100; rms_index++){
+				for(ia2k_sav_cnt=rms_index*100; ia2k_sav_cnt<(rms_index+1)*100; ia2k_sav_cnt++)
 				{
-					floatx=abs(accx_2k_buf1[ia2k_sav_cnt]-avg_sec_cur_x);     // to eliminate the DC component
-					floaty=abs(accy_2k_buf1[ia2k_sav_cnt]-avg_sec_cur_y);
-					floatz=abs(accz_2k_buf1[ia2k_sav_cnt]-avg_sec_cur_z);
+					peak_sec_x = 0;
+					peak_sec_y = 0;
+					peak_sec_z = 0;
+					rms_sum_sec_x = 0;
+					rms_sum_sec_y = 0;
+					rms_sum_sec_z = 0;
+					if (adcflag==0)
+					{
+						floatx=abs(accx_2k_buf1[ia2k_sav_cnt]-avg_sec_cur_x);     // to eliminate the DC component
+						floaty=abs(accy_2k_buf1[ia2k_sav_cnt]-avg_sec_cur_y);
+						floatz=abs(accz_2k_buf1[ia2k_sav_cnt]-avg_sec_cur_z);
+					}
+					else
+					{
+						floatx=abs(accx_2k_buf0[ia2k_sav_cnt]-avg_sec_cur_x);     // to eliminate the DC component
+						floaty=abs(accy_2k_buf0[ia2k_sav_cnt]-avg_sec_cur_y);
+						floatz=abs(accz_2k_buf0[ia2k_sav_cnt]-avg_sec_cur_z);
+					}
+					rms_sum_sec_x=rms_sum_sec_x+(floatx*floatx);
+					rms_sum_sec_y=rms_sum_sec_y+(floaty*floaty);
+					rms_sum_sec_z=rms_sum_sec_z+(floatz*floatz);
+					if(abs(peak_sec_x) < abs(floatx))
+					{
+						// Calculate peak value, accx
+						peak_sec_x = abs(floatx);
+					}
+					if(abs(peak_sec_y) < abs(floaty))
+					{
+						// Calculate peak value, accy
+						peak_sec_y = abs(floaty);
+					}
+					if(abs(peak_sec_z) < abs(floatz))
+					{
+						// Calculate peak value, accz
+						peak_sec_z = abs(floatz);
+					}
 				}
-				else
-				{
-					floatx=abs(accx_2k_buf0[ia2k_sav_cnt]-avg_sec_cur_x);     // to eliminate the DC component
-					floaty=abs(accy_2k_buf0[ia2k_sav_cnt]-avg_sec_cur_y);
-					floatz=abs(accz_2k_buf0[ia2k_sav_cnt]-avg_sec_cur_z);
+				if (max_rms_sum_sec_x < rms_sum_sec_x){   // 判断100个区间内，哪个区间的rms最大，这里只用了x轴做判断
+					max_rms_sum_sec_x = rms_sum_sec_x;
+					max_rms_sum_sec_y = rms_sum_sec_y;
+					max_rms_sum_sec_z = rms_sum_sec_z;
+					max_peak_sec_x = peak_sec_x;
+					max_peak_sec_y = peak_sec_y;					
+					max_peak_sec_z = peak_sec_z;
 				}
-				rms_sum_sec_x=rms_sum_sec_x+(floatx*floatx);
-				rms_sum_sec_y=rms_sum_sec_y+(floaty*floaty);
-				rms_sum_sec_z=rms_sum_sec_z+(floatz*floatz);
-				if(abs(peak_sec_x) < abs(floatx))
-				{
-					// Calculate peak value, accx
-					peak_sec_x = abs(floatx);
-				}
-				if(abs(peak_sec_y) < abs(floaty))
-				{
-					// Calculate peak value, accy
-					peak_sec_y = abs(floaty);
-				}
-				if(abs(peak_sec_z) < abs(floatz))
-				{
-					// Calculate peak value, accz
-					peak_sec_z = abs(floatz);
-				}
+
 			}
 //        bSave=0;
 			sav_stat=4;
@@ -5291,23 +5312,23 @@ void main(void)
 				gioSetBit(gioPORTA,2,0);
 				sciEnableNotification(scilinREG,SCI_RX_INT);
 #endif	
-			rms_sec_cur_x = rms_sum_sec_x/10240;  //normalization
-			rms_sec_cur_y = rms_sum_sec_y/10240;
-			rms_sec_cur_z = rms_sum_sec_z/10240;
-			rms_cur_bulk=(rms_sum_sec_x+rms_sum_sec_y)/20480;
+			rms_sec_cur_x = max_rms_sum_sec_x/100;  //normalization
+			rms_sec_cur_y = max_rms_sum_sec_y/100;
+			rms_sec_cur_z = max_rms_sum_sec_z/100;
+			rms_cur_bulk=(max_rms_sum_sec_x+max_rms_sum_sec_y)/200;
 //        rms_cur_bulk_float=(rms_sum_sec_x+rms_sum_sec_y)/10240;
 //			  rms_sec_cur_z_float = rms_sum_sec_z_float/10240;
-			rms_sum_sec_x = 0;
-			rms_sum_sec_y = 0;
-			rms_sum_sec_z = 0;
-			rms_sum_bulk =0;
+			max_rms_sum_sec_x = 0;
+			max_rms_sum_sec_y = 0;
+			max_rms_sum_sec_z = 0;
+			max_rms_sum_bulk =0;
 //        rms_sum_bulk_float=0;
 //				rms_sum_sec_x_float=0;
 //				rms_sum_sec_y_float=0;
 //				rms_sum_sec_z_float=0;
-			peak_sec_cur_x = peak_sec_x;
-			peak_sec_cur_y = peak_sec_y;
-			peak_sec_cur_z = peak_sec_z;
+			peak_sec_cur_x = max_peak_sec_x;
+			peak_sec_cur_y = max_peak_sec_y;
+			peak_sec_cur_z = max_peak_sec_z;
 			peak_sec_x = 0;
 			peak_sec_y = 0;
 			peak_sec_z = 0;
