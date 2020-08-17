@@ -70,9 +70,13 @@ uint16	ReceiveStatusData[2]	= { 0 };
 unsigned char i_rcv = 0;												/* UART receive data pointer */
 uint16 accx_2k_buf0[10000], accy_2k_buf0[10000],	accz_2k_buf0[10000], accr_2k_buf0[10000];	/* 1kHz sampling data buffers for accx, accy, accz (8x accumulation results)*/
 uint16 accx_2k_buf1[10000], accy_2k_buf1[10000],	accz_2k_buf1[10000], accr_2k_buf1[10000];	/* 1kHz sampling data buffers for accx, accy, accz (8x accumulation results)*/
-float rms_buf_100ms_x[100] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-float rms_buf_100ms_y[100] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-float rms_buf_100ms_z[100] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+// float rms_buf_100ms_x[100] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+// float rms_buf_100ms_y[100] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+// float rms_buf_100ms_z[100] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+float rms_buf_100ms_x = 0;
+float rms_buf_100ms_y = 0;
+float rms_buf_100ms_z = 0;
 
 int shock_xy_num_thresh[4] = {0, 0, 0, 0};
 int shock_z_num_thresh[4] = {0, 0, 0, 0};
@@ -93,6 +97,7 @@ unsigned int sav_addr1 = 0x0000000;         /* Global address of raw data storag
 uint16 fm_addr = 0;
 unsigned int sav_cnt = 0;
 unsigned int ia2k = 0;				/* index for 2k buffer */
+unsigned int ia100ms = 0;
 unsigned int ia_rms = 0;
 int ia2k_sav_cnt = 0;
 unsigned char bsav_level = 0,bsav_data = 0;			/* flag for saving 2k data */
@@ -100,10 +105,12 @@ int accx_sum = 0, accy_sum = 0, accz_sum = 0, accr_sum = 0;	/* used for acculuma
 long long rms_sum_sec_x = 0, rms_sum_sec_y = 0, rms_sum_sec_z = 0;		/* calculate the rms value of 10 seconds for three axises */
 float rms_sec_x = 0, rms_sec_y = 0,  rms_sec_z = 0;
 long long rms_sec_cur_x = 0, rms_sec_cur_y = 0, rms_sec_cur_z = 0;		/* storing the rms value of 10 seconds for three axises */
-int peak_sec_x = 0, peak_sec_y = 0, peak_sec_z = 0;					/* calculate the peak value of 10 seconds for three axises */
+uint32 peak_sec_x = 0, peak_sec_y = 0, peak_sec_z = 0;					/* calculate the peak value of 10 seconds for three axises */
+uint32 bottom_sec_x = 0xFFFF, bottom_sec_y = 0xFFFF, bottom_sec_z = 0xFFFF;
 float peak_sec_x_float=0, peak_sec_y_float=0, peak_sec_z_float=0;
 float peak_rms_xy=0, peak_rms_z=0;
-int peak_sec_cur_x = 0, peak_sec_cur_y = 0, peak_sec_cur_z = 0;
+uint32 peak_sec_cur_x = 0, peak_sec_cur_y = 0, peak_sec_cur_z = 0;
+uint32 bottom_sec_cur_x = 0, bottom_sec_cur_y = 0, bottom_sec_cur_z = 0;
 short int peak_sec_cur_r, peak_sec_r= 0;		/* storing the peak value of 10 seconds for three axises */
 short int bottom_sec_cur_r=0, bottom_sec_r=0;
 float peak_sec_r_float=0, peak_sec_cur_r_float=0, bottom_sec_cur_r_float=10000,bottom_sec_r_float=10000;
@@ -113,7 +120,7 @@ uint16 avg_sec_cur_x = 0, avg_sec_cur_y = 0, avg_sec_cur_z = 0;		/* storing the 
 short int avg_sec_cur_r, avg_sec_r = 0;
 float avg_sec_cur_r_float = 0;
 float avg_sec_x_float_100ms=0, avg_sec_y_float_100ms=0, avg_sec_z_float_100ms=0;
-float square_sec_x_float_100ms=0, square_sec_y_float_100ms=0, square_sec_z_float_100ms=0;
+double square_sec_x_float_100ms=0, square_sec_y_float_100ms=0, square_sec_z_float_100ms=0;
 
 
 long long rms_cur_bulk=0;
@@ -1626,28 +1633,28 @@ void main(void)
 
 			data[0]=0x0007;
 			check=data[0]^0xffff;
-			txdata1=(peak_sec_cur_x>>24)&0xff;
-			txdata2=(peak_sec_cur_x>>16)&0xff;
+			txdata1=((peak_sec_cur_x-bottom_sec_cur_x)>>24)&0xff;
+			txdata2=((peak_sec_cur_x-bottom_sec_cur_x)>>16)&0xff;
 			data[1]=(txdata1<<8)|txdata2;
 			check ^= data[1];
-			txdata1=(peak_sec_cur_x>>8)&0xff;
-			txdata2=peak_sec_cur_x&0xff;
+			txdata1=((peak_sec_cur_x-bottom_sec_cur_x)>>8)&0xff;
+			txdata2=(peak_sec_cur_x-bottom_sec_cur_x)&0xff;
 			data[2]=(txdata1<<8)|txdata2;
 			check ^= data[2];
-			txdata1=(peak_sec_cur_y>>24)&0xff;
-			txdata2=(peak_sec_cur_y>>16)&0xff;
+			txdata1=((peak_sec_cur_y-bottom_sec_cur_y)>>24)&0xff;
+			txdata2=((peak_sec_cur_y-bottom_sec_cur_y)>>16)&0xff;
 			data[3]=(txdata1<<8)|txdata2;
 			check ^= data[3];
-			txdata1=(peak_sec_cur_y>>8)&0xff;
-			txdata2=peak_sec_cur_y&0xff;
+			txdata1=((peak_sec_cur_y-bottom_sec_cur_y)>>8)&0xff;
+			txdata2=(peak_sec_cur_y-bottom_sec_cur_y)&0xff;
 			data[4]=(txdata1<<8)|txdata2;
 			check ^= data[4];
-			txdata1=(peak_sec_cur_z>>24)&0xff;
-			txdata2=(peak_sec_cur_z>>16)&0xff;
+			txdata1=((peak_sec_cur_z-bottom_sec_cur_z)>>24)&0xff;
+			txdata2=((peak_sec_cur_z-bottom_sec_cur_z)>>16)&0xff;
 			data[5]=(txdata1<<8)|txdata2;
 			check ^= data[5];
-			txdata1=(peak_sec_cur_z>>8)&0xff;
-			txdata2=peak_sec_cur_z&0xff;
+			txdata1=((peak_sec_cur_z-bottom_sec_cur_z)>>8)&0xff;
+			txdata2=(peak_sec_cur_z-bottom_sec_cur_z)&0xff;
 			data[6]=(txdata1<<8)|txdata2;
 			check ^= data[6];
 			data[7]= check;
@@ -5216,6 +5223,7 @@ void adcNotification( adcBASE_t *adc, uint32 group )
 	if ( iTick == 8 ) /* filter to alter the sample frequency to 1000Hz */
 	{
 		ia2k += 1;
+		ia100ms += 1;
 		accx_send	= accx_sum / 8;
 		accy_send	= accy_sum / 8;
 		accz_send	= accz_sum / 8;
@@ -5276,6 +5284,25 @@ void adcNotification( adcBASE_t *adc, uint32 group )
 			// Calculate peak value, accz
 			peak_sec_z = accz_send;
 		}
+		if(bottom_sec_x > accx_send)
+		{
+			// Calculate bottom value, accx
+			bottom_sec_x = accx_send;
+		}
+		if(bottom_sec_y > accy_send)
+		{
+			// Calculate bottom value, accy
+			bottom_sec_y = accy_send;
+		}
+		if(bottom_sec_z > accz_send)
+		{
+			// Calculate bottom value, accz
+			bottom_sec_z = accz_send;
+		}
+
+
+
+
 
 		arfloat = *((float*)&ar);
 		brfloat = *((float*)&br);
@@ -5303,8 +5330,9 @@ void adcNotification( adcBASE_t *adc, uint32 group )
 	{
 		  bAdc = 0;
   	}
-	if ( ia2k % 100 == 0)  // 100ms
+	if ( ia100ms == 100)  // 100ms
 	{
+		ia100ms = 0;
 		Bx_float = *((float*)&Bx);
 		Ax_float = *((float*)&Ax);
 		By_float = *((float*)&By);
@@ -5312,33 +5340,49 @@ void adcNotification( adcBASE_t *adc, uint32 group )
 		Bz_float = *((float*)&Bz);
 		Az_float = *((float*)&Az);	
 
-		avg_sec_x_float_100ms = avg_sec_x_float_100ms/100;
-		avg_sec_y_float_100ms = avg_sec_y_float_100ms/100;
-		avg_sec_z_float_100ms = avg_sec_z_float_100ms/100;
 
-		rms_buf_100ms_x[ia_rms] = Bx_float*(sqrt(square_sec_x_float_100ms/100) - avg_sec_x_float_100ms) + Ax_float;
-		rms_buf_100ms_y[ia_rms] = By_float*(sqrt(square_sec_y_float_100ms/100) - avg_sec_y_float_100ms) + Ay_float;
-		rms_buf_100ms_z[ia_rms] = Bz_float*(sqrt(square_sec_z_float_100ms/100) - avg_sec_z_float_100ms) + Az_float;
+		avg_sec_x_float_100ms = avg_sec_x_float_100ms / 100;
+		avg_sec_y_float_100ms = avg_sec_y_float_100ms / 100;
+		avg_sec_z_float_100ms = avg_sec_z_float_100ms / 100;
+		rms_buf_100ms_x = square_sec_x_float_100ms/100  - avg_sec_x_float_100ms * avg_sec_x_float_100ms;
+		rms_buf_100ms_y = square_sec_y_float_100ms/100  - avg_sec_y_float_100ms * avg_sec_y_float_100ms;
+		rms_buf_100ms_z = square_sec_z_float_100ms/100  - avg_sec_z_float_100ms * avg_sec_z_float_100ms;
+		
+		rms_buf_100ms_x = Bx_float*rms_buf_100ms_x + Ax_float;
+		rms_buf_100ms_x = Bx_float*rms_buf_100ms_x + Ax_float;
+		rms_buf_100ms_x = Bx_float*rms_buf_100ms_x + Ax_float;
+		
+		//rms_buf_100ms_x = 100;
+		//rms_buf_100ms_y = 100;
+		//rms_buf_100ms_z = 100;
 
-		if ((rms_buf_100ms_x[ia_rms] + rms_buf_100ms_y[ia_rms])/2 > shock_g_thresh)
+
+		// rms_buf_100ms_x = Bx_float*(sqrt(square_sec_x_float_100ms/100) - avg_sec_x_float_100ms/100) + Ax_float;
+		// rms_buf_100ms_y = By_float*(sqrt(square_sec_y_float_100ms/100) - avg_sec_y_float_100ms/100) + Ay_float;
+		// rms_buf_100ms_z = Bz_float*(sqrt(square_sec_z_float_100ms/100) - avg_sec_z_float_100ms/100) + Az_float;
+		square_sec_x_float_100ms = 0;
+		square_sec_y_float_100ms = 0;
+		square_sec_z_float_100ms = 0;	
+
+		if ((rms_buf_100ms_x + rms_buf_100ms_y)/2 > shock_g_thresh)
 		{
 			shock_cnt_xy++;
 		}
-		if (rms_buf_100ms_z[ia_rms] > shock_g_thresh)
+		if (rms_buf_100ms_z > shock_g_thresh)
 		{
 			shock_cnt_z++;
 		}
 
-		rms_sec_x += rms_buf_100ms_x[ia_rms];
-		rms_sec_y += rms_buf_100ms_y[ia_rms];		
-		rms_sec_z += rms_buf_100ms_z[ia_rms];
+		rms_sec_x += rms_buf_100ms_x;
+		rms_sec_y += rms_buf_100ms_y;		
+		rms_sec_z += rms_buf_100ms_z;
 
-		if(peak_rms_xy < rms_buf_100ms_x[ia_rms])
-			peak_rms_xy = rms_buf_100ms_x[ia_rms];
-		if(peak_rms_xy < rms_buf_100ms_y[ia_rms])
-			peak_rms_xy = rms_buf_100ms_y[ia_rms];
-		if(peak_rms_z < rms_buf_100ms_z[ia_rms])
-			peak_rms_z = rms_buf_100ms_z[ia_rms];
+		if(peak_rms_xy < rms_buf_100ms_x)
+			peak_rms_xy = rms_buf_100ms_x;
+		if(peak_rms_xy < rms_buf_100ms_y)
+			peak_rms_xy = rms_buf_100ms_y;
+		if(peak_rms_z < rms_buf_100ms_z)
+			peak_rms_z = rms_buf_100ms_z;
 
 		avg_sec_x_float_100ms = 0;
 		avg_sec_y_float_100ms = 0;
@@ -5352,6 +5396,11 @@ void adcNotification( adcBASE_t *adc, uint32 group )
 		peak_sec_cur_x = peak_sec_x;
 		peak_sec_cur_y = peak_sec_y;
 		peak_sec_cur_z = peak_sec_z;
+
+		bottom_sec_cur_x = bottom_sec_x;
+		bottom_sec_cur_y = bottom_sec_y;
+		bottom_sec_cur_z = bottom_sec_z;
+
 
 		avg_sec_cur_x	= avg_sec_x_float / 10000; /* normalization */
 		avg_sec_cur_y	= avg_sec_y_float / 10000;
@@ -5376,6 +5425,9 @@ void adcNotification( adcBASE_t *adc, uint32 group )
 		peak_sec_x = 0;
 		peak_sec_y = 0;
 		peak_sec_z = 0;
+		bottom_sec_x = 0xffff; 		
+		bottom_sec_y = 0xffff; 
+		bottom_sec_z = 0xffff; 
 		avg_sec_x_float		= 0;
 		avg_sec_y_float		= 0;
 		avg_sec_z_float		= 0;
